@@ -40,7 +40,6 @@ const ProjectList = () => {
             .then(data => setProjects(data));
     }, []);
 
-    console.log(projects)
 
     return (
         <div>

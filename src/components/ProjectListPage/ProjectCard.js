@@ -13,13 +13,7 @@ const ProjectCard = ({project}) => {
                 <div className="old-reddit-font text-base">{`project owner ID: ${project.owner}`}</div>
                 <div className="old-reddit-font text-base">{`Field: ${project.project_status}`}</div>
 
-
-
-
                 <span className="old-reddit-font text-base"> {"Participants:"} {project.participants.join(", ")}</span>
-
-
-
 
                 <div className="old-reddit-font text-base">{`Theme: ${project.theme}`}</div>
             </div>
