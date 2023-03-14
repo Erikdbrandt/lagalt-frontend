@@ -1,16 +1,22 @@
 import './App.css';
 import Header from "./Header";
 import MainPage from "./views/MainPage";
+import ProjectView from "./views/ProjectView";
+import {Route, BrowserRouter, Routes} from "react-router-dom";
 
 function App() {
     return (
-        <div className="App">
 
-            <Header/>
-            <MainPage/>
+        <BrowserRouter>
 
-
-        </div>
+            <div className="App">
+                <Header/>
+                <Routes>
+                    <Route path="/" element={<MainPage/>}/>
+                    <Route path="/project/:id" element={<ProjectView/>}/>
+                </Routes>
+            </div>
+        </BrowserRouter>
     );
 }
 
