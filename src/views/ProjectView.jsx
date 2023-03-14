@@ -15,14 +15,13 @@ const ProjectView = () => {
 
     return (
         <div>
-            <div className="bg-blue-100 h-14 flex items-center p-2 ">
-                project view
-            </div>
+
             {project ? (
-                <div>
-                    <h1 className="old-reddit-font text-lg font-bold text-blue-400">{project.title}</h1>
+                <div className="p-8 ">
+                    <h1 className="old-reddit-font text-4xl font-bold text-blue-400">{project.title}</h1>
                     <p>{project.description}</p>
-                    {/* Display other project data */}
+
+                    <button className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Apply</button>
                 </div>
             ) : (
                 <p>Loading project data...</p>

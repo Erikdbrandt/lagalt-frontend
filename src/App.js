@@ -1,5 +1,5 @@
 import './App.css';
-import Header from "./Header";
+import Header from "./views/Header";
 import MainPage from "./views/MainPage";
 import ProjectView from "./views/ProjectView";
 import {Route, BrowserRouter, Routes} from "react-router-dom";
