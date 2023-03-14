@@ -24,10 +24,11 @@ const ProjectList = () => {
         }
     }, [projects, filterType]);
 
+    //this function is called when the user selects a new filter type
     const handleFilterChange = (event) => {
         setFilterType(event.target.value);
     }
-
+    // Get a list of all project types
     const projectTypes = [...new Set(projects.map(project => project.project_type))];
 
     return (
