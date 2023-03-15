@@ -3,6 +3,7 @@ import Header from "./views/Header";
 import MainPage from "./views/MainPage";
 import ProjectView from "./views/ProjectView";
 import {Route, BrowserRouter, Routes} from "react-router-dom";
+import UserProfile from "./views/UserProfile"
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<MainPage/>}/>
                     <Route path="/project/:id" element={<ProjectView/>}/>
+                    <Route path="/profile" element={<UserProfile/>}/>
                 </Routes>
             </div>
         </BrowserRouter>

@@ -1,16 +1,30 @@
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 
 const Header = () => {
     return (
-        <Link to="/">
-        <div className="bg-blue-100 h-14 flex items-center p-2 ">
-            <img className="h-14" src="https://logodownload.org/wp-content/uploads/2018/02/reddit-logo-17.png" alt="Reddit Logo" />
-            <div className="ml-2 text-lg font-bold text-xl">lagalt</div>
-
-            <div className="ml-auto"> Login </div>
+        <div className="bg-blue-100 h-14 flex items-center justify-between p-2">
+            <div className="flex items-center">
+                <Link to="/">
+                    <img
+                        className="h-14 cursor-pointer"
+                        src="https://logodownload.org/wp-content/uploads/2018/02/reddit-logo-17.png"
+                        alt="Reddit Logo"
+                    />
+                </Link>
+                <Link to="/">
+                    <div className="ml-2 text-lg font-bold text-xl cursor-pointer">
+                        lagalt
+                    </div>
+                </Link>
+            </div>
+            <div className="flex items-center">
+                <Link to="/profile">
+                    <div className="mr-4 cursor-pointer">Profile</div>
+                </Link>
+                <div className="cursor-pointer">Login</div>
+            </div>
         </div>
-        </Link>
-    )
-}
+    );
+};
 
-export default Header
+export default Header;
