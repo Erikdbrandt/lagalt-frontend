@@ -2,7 +2,7 @@ import ProjectInfo from "../components/ProjectView/ProjectInfo"
 import ChatBox from "../components/ProjectView/ChatBox"
 
 
-const ProjectView = () => {
+const Project = () => {
 
     return (
         <div>
@@ -13,4 +13,4 @@ const ProjectView = () => {
     );
 };
 
-export default ProjectView;
+export default Project;
