@@ -1,18 +1,30 @@
 import ProjectCard from "./ProjectCard";
 import { useState, useEffect } from 'react';
+import axios from 'axios';
+import keycloak from "../../keycloak";
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [filterType, setFilterType] = useState('');
 
-
     // Fetch projects from the backend
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/project')
-            .then(response => response.json())
-            .then(data => setProjects(data));
+        const fetchProjects = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/v1/project', {
+                    headers: {
+                        Authorization: `Bearer ${keycloak.token}`
+                    }
+                });
+                setProjects(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchProjects();
     }, []);
+
 
     // Filter projects by project type
     useEffect(() => {
@@ -24,10 +36,11 @@ const ProjectList = () => {
         }
     }, [projects, filterType]);
 
-    //this function is called when the user selects a new filter type
+    // This function is called when the user selects a new filter type
     const handleFilterChange = (event) => {
         setFilterType(event.target.value);
     }
+
     // Get a list of all project types
     const projectTypes = [...new Set(projects.map(project => project.project_type))];
 
