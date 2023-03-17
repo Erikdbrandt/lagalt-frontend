@@ -8,14 +8,14 @@ function StartPage() {
         <div>
             <h1>Start Page</h1>
 
-            <section className="actions">
-                {!keycloak.authenticated && (
-                    <button onClick={() => keycloak.login()}>Login</button>
-                )}
-                {keycloak.authenticated && (
-                    <button onClick={() => keycloak.logout()}>Logout</button>
-                )}
-            </section>
+            {/*<section className="actions">*/}
+            {/*    {!keycloak.authenticated && (*/}
+            {/*        <button onClick={() => keycloak.login()}>Login</button>*/}
+            {/*    )}*/}
+            {/*    {keycloak.authenticated && (*/}
+            {/*        <button onClick={() => keycloak.logout()}>Logout</button>*/}
+            {/*    )}*/}
+            {/*</section>*/}
 
             {keycloak.token && (
                 <div>

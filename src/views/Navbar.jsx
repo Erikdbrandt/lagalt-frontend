@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
+import keycloak from "../keycloak";
 
-const Header = () => {
+const Navbar = () => {
     return (
         <div className="bg-blue-100 h-14 flex items-center justify-between p-2">
             <div className="flex items-center">
@@ -21,10 +22,27 @@ const Header = () => {
                 <Link to="/profile">
                     <div className="mr-4 cursor-pointer">Profile</div>
                 </Link>
-                <div className="cursor-pointer">Login</div>
+                <div>
+                    <h1>Start Page</h1>
+
+                    <section className="actions">
+                        {!keycloak.authenticated && (
+                            <button onClick={() => keycloak.login()}>Login</button>
+                        )}
+                        {keycloak.authenticated && (
+                            <button onClick={() => keycloak.logout()}>Logout</button>
+                        )}
+                    </section>
+                    {/*{keycloak.token && (*/}
+                    {/*    <div>*/}
+                    {/*        <h4>Token</h4>*/}
+                    {/*        <pre>{keycloak.token}</pre>*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
+                </div>
             </div>
         </div>
     );
 };
 
-export default Header;
+export default Navbar;
