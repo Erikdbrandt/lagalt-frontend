@@ -10,25 +10,14 @@ import {ROLES} from "./const/roles";
 
 function App() {
     return (
-
         <BrowserRouter>
-
             <div className="App">
                 <Header/>
                 <Routes>
                     <Route path="/" element={<StartPage/>}/>
-                    <Route
-                        path="/m"
-                        element={
-                        <KeycloakRoute role={ROLES.offline_access}>
-                            <MainPage/>
-                    </KeycloakRoute>
-                    }
-                    />
+                    <Route path="/m" element={<KeycloakRoute role={ROLES.offline_access}><MainPage/></KeycloakRoute>}/>
                     <Route path="/project/:id" element={<ProjectView/>}/>
-                    <Route path="/profile" element={<UserProfile/>}/>
-
-
+                    <Route path="/profile" element={<KeycloakRoute role={ROLES.offline_access}><UserProfile/></KeycloakRoute>}/>
                 </Routes>
             </div>
         </BrowserRouter>
