@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import keycloak from "../keycloak";
+import StartPage from "./StartPage";
 
 const Navbar = () => {
     return (
@@ -19,12 +20,15 @@ const Navbar = () => {
                 </Link>
             </div>
             <div className="flex items-center">
-                <Link to="/profile">
-                    <div className="mr-4 cursor-pointer">Profile</div>
-                </Link>
+                {keycloak.authenticated &&
+                    (<Link to="/profile">
+                        <div className="mr-4 cursor-pointer">Profile</div>
+                    </Link>)}
+                {keycloak.authenticated &&
+                    (<Link to="/startpage">
+                        <div className="mr-4 cursor-pointer">StartPage</div>
+                    </Link>)}
                 <div>
-                    <h1>Start Page</h1>
-
                     <section className="actions">
                         {!keycloak.authenticated && (
                             <button onClick={() => keycloak.login()}>Login</button>
@@ -33,12 +37,6 @@ const Navbar = () => {
                             <button onClick={() => keycloak.logout()}>Logout</button>
                         )}
                     </section>
-                    {/*{keycloak.token && (*/}
-                    {/*    <div>*/}
-                    {/*        <h4>Token</h4>*/}
-                    {/*        <pre>{keycloak.token}</pre>*/}
-                    {/*    </div>*/}
-                    {/*)}*/}
                 </div>
             </div>
         </div>
