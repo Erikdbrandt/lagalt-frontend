@@ -40,6 +40,7 @@ const ProjectInfo = () => {
                         <Descriptions.Item label="Project type">{project.project_type}</Descriptions.Item>
                         <Descriptions.Item label="Theme">{project.theme}</Descriptions.Item>
                         <Descriptions.Item label="Status">{project.project_status}</Descriptions.Item>
+                        <Descriptions.Item label="Skills">{project.skills}</Descriptions.Item>
                     </Descriptions>
                     {keycloak.authenticated &&
                         (<button onClick={() => setShowPopup(true)} className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Apply</button>)}
