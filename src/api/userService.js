@@ -1,42 +1,75 @@
 import keycloak from "../keycloak";
 import axios from "axios";
 
-const loadUserProfile = async () => {
+const checkForUser = async (email) => {
     try {
-        const userProfile = await keycloak.loadUserProfile();
-        const { data } = await axios.get(`http://localhost:8080/api/v1/user/email/${userProfile.email}`, {
-            headers: {
-                Authorization: `Bearer ${keycloak.token}`,
-            },
-        });
-
-        if (data) {
-            console.log("User exists:", data);
-            localStorage.setItem("user", JSON.stringify(userProfile));
-        } else {
-            console.log("User does not exist");
-
-            const userToCreate = {
-                email: userProfile.email,
-                full_name: userProfile.firstName + " " + userProfile.lastName,
-                userVisibility: "REGULAR",
-            };
-
-            const response = await axios.post("http://localhost:8080/api/v1/user/create", userToCreate, {
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/user/email/${email}`,
+            {
                 headers: {
                     Authorization: `Bearer ${keycloak.token}`,
                 },
-            });
+            }
+        );
 
-            console.log("User created:", response.data);
-            localStorage.setItem("user", JSON.stringify(userProfile));
+        console.log("we got response" + response.data)
+        return [null, response.data];
+    } catch (error) {
+        console.log("we got error")
+        return [error.message, []];
+
+    }
+}
+
+
+const createUser = async (userProfile) => {
+    try {
+        const response = await axios.post(
+            "http://localhost:8080/api/v1/user/create",
+            {
+                email: userProfile.email,
+                full_name: userProfile.firstName + " " + userProfile.lastName,
+                userVisibility: "REGULAR"
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${keycloak.token}`
+                },
+            }
+        );
+
+
+
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error("Could not create user with username: " + userProfile.email);
         }
 
-        return [null, userProfile];
-    } catch (error) {
-        console.error(error);
-        return [error.message, null];
-    }
-};
+        const user = await response.data;
 
-export default loadUserProfile;
+        console.log("created new user" + user);
+        return [null, user];
+
+    } catch (error) {
+        return [error.message, []];
+    }
+}
+
+
+export const loginUser = async (userProfile) => {
+    const [checkError, user] = await checkForUser(userProfile.email);
+
+    if (checkError !== null) {
+
+        return [checkError, null];
+    }
+
+    if (user) {
+        console.log("we got a existing user" + user)
+        return [null, user];
+
+    }
+
+    console.log("we got a new user" + userProfile)
+    return await createUser(userProfile);
+}
+

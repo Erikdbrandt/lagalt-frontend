@@ -1,58 +1,41 @@
 import keycloak from "../keycloak";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { loginUser } from "../api/userService";
 
 function StartPage() {
     const [user, setUser] = useState(null);
+    const [authenticated, setAuthenticated] = useState(false);
+
+    const isAuthenticated = keycloak.authenticated;
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
-        console.log("Stored user:");
+
         if (storedUser) {
             setUser(JSON.parse(storedUser));
-        } else if (keycloak.authenticated) {
-            console.log("User is authenticated");
+            console.log("User loaded from local storage");
+        } else if (isAuthenticated) {
+            console.log("User is authenticated and there is no user");
             loadUserProfile();
         }
-
-    }, []);
+    }, [isAuthenticated]);
 
     const loadUserProfile = async () => {
         try {
             const userProfile = await keycloak.loadUserProfile();
             setUser(userProfile);
 
-            const { data } = await axios.get(
-                `http://localhost:8080/api/v1/user/email/${userProfile.email}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${keycloak.token}`,
-                    },
-                }
-            );
+            const [error, user] = await loginUser(userProfile);
 
-            if (data) {
-                console.log("User exists:", data);
-                localStorage.setItem("user", JSON.stringify(userProfile));
-            } else {
-                console.log("User does not exist");
+            if (error !== null) {
+                console.log(error);
+            }
 
-                const userToCreate = {
-                    email: userProfile.email,
-                    full_name: userProfile.firstName + " " + userProfile.lastName,
-                    userVisibility: "REGULAR",
-                };
-                const response = await axios.post(
-                    "http://localhost:8080/api/v1/user/create",
-                    userToCreate,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${keycloak.token}`,
-                        },
-                    }
-                );
-                console.log("User created:", response.data);
-                localStorage.setItem("user", JSON.stringify(userProfile));
+            if (user) {
+                localStorage.setItem("user", JSON.stringify(user));
+                console.log("User is set");
+                setUser(user);
             }
         } catch (error) {
             console.error(error);
@@ -68,20 +51,27 @@ function StartPage() {
         }
     };
 
+    const handleLogout = async () => {
+        try {
+            console.log("User is logged out");
+            setUser(null);
+            localStorage.removeItem("user");
+            await keycloak.logout();
+            console.log("User is removed");
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <div>
             <h1>Start Page</h1>
 
             <section className="actions">
-                {!keycloak.authenticated && (
-                    <button onClick={handleLogin}>Login</button>
-                )}
-                {keycloak.authenticated && (
+                {!isAuthenticated && <button onClick={handleLogin}>Login</button>}
+                {isAuthenticated && (
                     <>
-                        <p>
-                            Welcome, {user?.firstName || ""} {user?.lastName || ""}!
-                        </p>
-                        <button onClick={() => keycloak.logout()}>Logout</button>
+                        <button onClick={handleLogout}>Logout</button>
                     </>
                 )}
             </section>
@@ -89,8 +79,7 @@ function StartPage() {
             {user && (
                 <div>
                     <h4>User Info</h4>
-
-                    username: {user.firstName} {user.lastName} <br />
+                    username: {user.full_name} <br />
                 </div>
             )}
         </div>
