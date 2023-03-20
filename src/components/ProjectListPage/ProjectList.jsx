@@ -1,7 +1,9 @@
 import ProjectCard from "./ProjectCard";
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import axios from 'axios';
 import keycloak from "../../keycloak";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
@@ -41,6 +43,12 @@ const ProjectList = () => {
         setFilterType(event.target.value);
     }
 
+    const handleAddProject = () => {
+        // Implement logic to add a new project
+        console.log('Add project clicked');
+    }
+
+
     // Get a list of all project types
     const projectTypes = [...new Set(projects.map(project => project.project_type))];
 
@@ -55,8 +63,12 @@ const ProjectList = () => {
             </select>
 
             {filteredProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard key={project.id} project={project}/>
             ))}
+            {keycloak.authenticated && (
+                <div className="mt-5 flex items-center justify-center ">
+                    <button onClick={handleAddProject}><FontAwesomeIcon icon={faPlus} size="3x"/></button>
+                </div>)}
         </div>
     );
 }
