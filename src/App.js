@@ -15,7 +15,7 @@ function App() {
                 <Navbar/>
                 <Routes>
                     <Route path="/" element={<MainPage/>}/>
-                    <Route path="/m" element={<KeycloakRoute role={ROLES.offline_access}><MainPage/></KeycloakRoute>}/>
+                    <Route path="/user" element={<KeycloakRoute role={ROLES.offline_access}><MainPage/></KeycloakRoute>}/>
                     <Route path="/project/:id" element={<ProjectView/>}/>
                     <Route path="/profile" element={<KeycloakRoute role={ROLES.offline_access}><UserProfile/></KeycloakRoute>}/>
                     <Route path="/startpage" element={<KeycloakRoute role={ROLES.offline_access}><StartPage/></KeycloakRoute>}/>

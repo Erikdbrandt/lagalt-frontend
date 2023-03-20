@@ -47,10 +47,15 @@ const ProjectInfo = () => {
                         <Descriptions.Item label="Description">{project.description}</Descriptions.Item>
                         <Descriptions.Item label="Project type">{project.project_type}</Descriptions.Item>
                         <Descriptions.Item label="Theme">{project.theme}</Descriptions.Item>
+                        <Descriptions.Item label="Owner">{project.owner}</Descriptions.Item>
                         <Descriptions.Item label="Status">{project.project_status}</Descriptions.Item>
-                        <Descriptions.Item label="Participants">{project.participants}</Descriptions.Item>
+                        {/*<Descriptions.Item label="Participants">{project.participants}</Descriptions.Item>*/}
                         <Descriptions.Item label="Skills">
-                            <ul>{skillNames.map(skillName => <li key={skillName}>{skillName}</li>)} </ul>
+                            <ul>
+                                {skillNames.map(skillName =>
+                                    <li key={skillName}>{skillName}</li>
+                                )}
+                            </ul>
                         </Descriptions.Item>
                     </Descriptions>
                     {keycloak.authenticated &&
