@@ -1,8 +1,11 @@
-import {Link} from "react-router-dom";
+import {Link } from "react-router-dom";
 import keycloak from "../keycloak";
 import StartPage from "./StartPage";
 
 const Navbar = () => {
+    const handleLogout = () => {
+        keycloak.logout({ redirectUri: window.location.origin });
+    };
     return (
         <div className="bg-blue-100 h-14 flex items-center justify-between p-2">
             <div className="flex items-center">
@@ -34,7 +37,7 @@ const Navbar = () => {
                             <button onClick={() => keycloak.login()}>Login</button>
                         )}
                         {keycloak.authenticated && (
-                            <button onClick={() => keycloak.logout()}>Logout</button>
+                            <button onClick={handleLogout}>Logout</button>
                         )}
                     </section>
                 </div>
