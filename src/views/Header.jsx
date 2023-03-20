@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import keycloak from '../keycloak';
 
 const Header = () => {
     return (
@@ -18,9 +19,11 @@ const Header = () => {
                 </Link>
             </div>
             <div className="flex items-center">
-                <Link to="/profile">
-                    <div className="mr-4 cursor-pointer">Profile</div>
-                </Link>
+                {keycloak.authenticated && (
+                    <Link to="/profile">
+                        <div className="mr-4 cursor-pointer">Profile</div>
+                    </Link>
+                )}
                 <div className="cursor-pointer">Login</div>
             </div>
         </div>

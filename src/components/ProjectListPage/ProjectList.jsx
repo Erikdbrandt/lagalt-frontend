@@ -5,7 +5,7 @@ import keycloak from "../../keycloak"
 function ProjectList() {
     const { filteredProjects, projectTypes, handleFilterChange, filterType } = useProjectList();
 
-    if (!keycloak.hasRealmRole('admin')) {
+    if (!keycloak.hasRealmRole('offline_access')) {
         return <div>You do not have permission to view projects.</div>;
     }
 
