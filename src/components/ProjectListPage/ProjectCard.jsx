@@ -9,6 +9,7 @@ const ProjectCard = ({project}) => {
             </div>
             <div className="card_right flex-grow">
 
+
                 <Link to={`/project/${project.project_id}`}>
                     <div className="old-reddit-font text-lg font-bold text-blue-400">{project.title}</div>
                 </Link>
