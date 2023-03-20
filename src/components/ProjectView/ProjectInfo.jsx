@@ -1,5 +1,6 @@
-import {useParams} from "react-router-dom"
+import {Link, useParams} from "react-router-dom"
 import {useEffect, useState} from "react"
+import keycloak from "../../keycloak";
 
 const ProjectInfo = () => {
     const {id} = useParams(); // extract project ID from URL path
@@ -38,7 +39,9 @@ const ProjectInfo = () => {
                         className="old-reddit-font text-base"> {"Participants:"} {project.participants.join(", ")}</div>
                     <div className="old-reddit-font text-base">{`Status: ${project.project_status}`}</div>
 
-                    <button onClick={() => setShowPopup(true)} className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Apply</button>
+                    {keycloak.authenticated &&
+                        (<button onClick={() => setShowPopup(true)} className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Apply</button>)}
+
                 </div>
             ) : (
                 <p>Loading project data...</p>
