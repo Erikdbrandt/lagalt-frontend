@@ -1,13 +1,10 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import keycloak from "../keycloak";
-import {useEffect, useState} from "react"
-import {loginUser} from "../api/userService"
+import { useEffect, useState } from "react";
+import { loginUser } from "../api/userService";
 
 const Navbar = () => {
-
-
     const [user, setUser] = useState(null);
-
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -23,33 +20,37 @@ const Navbar = () => {
 
     const loadUserProfile = async () => {
         try {
-            console.log("about to load user profile")
+            console.log("about to load user profile");
             const userProfile = await keycloak.loadUserProfile();
             setUser(userProfile);
 
-            console.log("about to login user")
-            const [error, user] = await loginUser(userProfile);
+            console.log("about to login user");
+            const [error, { user: newUser, isNewUser }] = await loginUser(userProfile);
 
-            if (error !== null) {
+            if (error) {
                 console.log(error);
             }
 
-            if (user) {
-                localStorage.setItem("user", JSON.stringify(user));
+            if (newUser) {
+                localStorage.setItem("user", JSON.stringify(newUser));
                 console.log("User is set");
-                setUser(user);
+                setUser(newUser);
+
+                if (isNewUser) {
+                    alert("Welcome, new user! Please fill out your additional information.");
+                }
             }
         } catch (error) {
-            console.error(error);
+            console.error("Error loading user profile:", error);
         }
     };
 
     const handleLogin = async () => {
         try {
             await keycloak.login();
-            loadUserProfile();
+            await loadUserProfile();
         } catch (error) {
-            console.error(error);
+            console.error("Error logging in:", error);
         }
     };
 
@@ -61,11 +62,9 @@ const Navbar = () => {
             await keycloak.logout();
             console.log("User is removed");
         } catch (error) {
-            console.error(error);
+            console.error("Error logging out:", error);
         }
     };
-
-
 
     return (
         <div className="bg-blue-100 h-14 flex items-center justify-between p-2">
@@ -84,21 +83,22 @@ const Navbar = () => {
                 </Link>
             </div>
             <div className="flex items-center">
-                {keycloak.authenticated &&
-                    (<Link to="/profile">
-                        <div className="mr-4 cursor-pointer">Profile</div>
-                    </Link>)}
-                {keycloak.authenticated &&
-                    (<Link to="/startpage">
-                        <div className="mr-4 cursor-pointer">StartPage</div>
-                    </Link>)}
+                {keycloak.authenticated && (
+                    <>
+                        <Link to="/profile">
+                            <div className="mr-4 cursor-pointer">Profile</div>
+                        </Link>
+                        <Link to="/startpage">
+                            <div className="mr-4 cursor-pointer">StartPage</div>
+                        </Link>
+                    </>
+                )}
                 <div>
                     <section className="actions">
-                        {!keycloak.authenticated && (
-                            <button onClick={handleLogin}>Login</button>
-                        )}
-                        {keycloak.authenticated && (
+                        {keycloak.authenticated ? (
                             <button onClick={handleLogout}>Logout</button>
+                        ) : (
+                            <button onClick={handleLogin}>Login</button>
                         )}
                     </section>
                 </div>
