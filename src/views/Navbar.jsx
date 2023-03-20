@@ -15,11 +15,11 @@ const Navbar = () => {
         if (storedUser) {
             setUser(JSON.parse(storedUser));
             console.log("User loaded from local storage");
-        } else if (isAuthenticated) {
+        } else if (keycloak.authenticated) {
             console.log("User is authenticated and there is no user");
             loadUserProfile();
         }
-    }, [isAuthenticated]);
+    }, [keycloak.authenticated]);
 
     const loadUserProfile = async () => {
         try {
