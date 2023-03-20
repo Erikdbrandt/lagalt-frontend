@@ -1,9 +1,12 @@
+/*
 import keycloak from "../keycloak";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { loginUser } from "../api/userService";
+*/
 
 function StartPage() {
+/*
     const [user, setUser] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
 
@@ -62,12 +65,13 @@ function StartPage() {
             console.error(error);
         }
     };
+*/
 
     return (
         <div>
             <h1>Start Page</h1>
 
-            <section className="actions">
+          {/*  <section className="actions">
                 {!isAuthenticated && <button onClick={handleLogin}>Login</button>}
                 {isAuthenticated && (
                     <>
@@ -81,7 +85,7 @@ function StartPage() {
                     <h4>User Info</h4>
                     username: {user.full_name} <br />
                 </div>
-            )}
+            )}*/}
         </div>
     );
 }

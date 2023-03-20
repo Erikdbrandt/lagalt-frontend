@@ -1,8 +1,72 @@
 import {Link} from "react-router-dom";
 import keycloak from "../keycloak";
-import StartPage from "./StartPage";
+import {useEffect, useState} from "react"
+import {loginUser} from "../api/userService"
 
 const Navbar = () => {
+
+
+    const [user, setUser] = useState(null);
+
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+            console.log("User loaded from local storage");
+        } else if (isAuthenticated) {
+            console.log("User is authenticated and there is no user");
+            loadUserProfile();
+        }
+    }, [isAuthenticated]);
+
+    const loadUserProfile = async () => {
+        try {
+            console.log("about to load user profile")
+            const userProfile = await keycloak.loadUserProfile();
+            setUser(userProfile);
+
+            console.log("about to login user")
+            const [error, user] = await loginUser(userProfile);
+
+            if (error !== null) {
+                console.log(error);
+            }
+
+            if (user) {
+                localStorage.setItem("user", JSON.stringify(user));
+                console.log("User is set");
+                setUser(user);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleLogin = async () => {
+        try {
+            await keycloak.login();
+            loadUserProfile();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            console.log("User is logged out");
+            setUser(null);
+            localStorage.removeItem("user");
+            await keycloak.logout();
+            console.log("User is removed");
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
+
     return (
         <div className="bg-blue-100 h-14 flex items-center justify-between p-2">
             <div className="flex items-center">
@@ -31,10 +95,10 @@ const Navbar = () => {
                 <div>
                     <section className="actions">
                         {!keycloak.authenticated && (
-                            <button onClick={() => keycloak.login()}>Login</button>
+                            <button onClick={handleLogin}>Login</button>
                         )}
                         {keycloak.authenticated && (
-                            <button onClick={() => keycloak.logout()}>Logout</button>
+                            <button onClick={handleLogout}>Logout</button>
                         )}
                     </section>
                 </div>

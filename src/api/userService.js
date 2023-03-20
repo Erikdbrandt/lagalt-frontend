@@ -1,6 +1,8 @@
 import keycloak from "../keycloak";
 import axios from "axios";
 
+
+
 const checkForUser = async (email) => {
     try {
         const response = await axios.get(
