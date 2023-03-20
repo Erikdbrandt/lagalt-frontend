@@ -8,6 +8,7 @@ const ProjectInfo = () => {
     const [project, setProject] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [skillNames, setSkillNames] = useState([])
+    const [ownerName, setOwnerName] = useState("")
 
     const handleApplyClick = () => {
         setShowPopup(true);
@@ -37,6 +38,13 @@ const ProjectInfo = () => {
             .catch((error) => console.error(error));
     }, [id]);
 
+    useEffect(() => {
+        fetch(`http://localhost:8080/api/v1/project/ownerName/${id}`)
+            .then((response) => response.text())
+            .then((data) => setOwnerName(data))
+            .catch((error) => console.error(error));
+    }, [id]);
+
     return (
         <div>
 
@@ -47,7 +55,7 @@ const ProjectInfo = () => {
                         <Descriptions.Item label="Description">{project.description}</Descriptions.Item>
                         <Descriptions.Item label="Project type">{project.project_type}</Descriptions.Item>
                         <Descriptions.Item label="Theme">{project.theme}</Descriptions.Item>
-                        <Descriptions.Item label="Owner">{project.owner}</Descriptions.Item>
+                        <Descriptions.Item label="Owner">{ownerName}</Descriptions.Item>
                         <Descriptions.Item label="Status">{project.project_status}</Descriptions.Item>
                         {/*<Descriptions.Item label="Participants">{project.participants}</Descriptions.Item>*/}
                         <Descriptions.Item label="Skills">
