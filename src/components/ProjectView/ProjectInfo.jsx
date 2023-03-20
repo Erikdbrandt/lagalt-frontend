@@ -1,6 +1,7 @@
 import {Link, useParams} from "react-router-dom"
 import {useEffect, useState} from "react"
 import keycloak from "../../keycloak";
+import { Badge, Descriptions } from 'antd';
 
 const ProjectInfo = () => {
     const {id} = useParams(); // extract project ID from URL path
@@ -33,12 +34,13 @@ const ProjectInfo = () => {
 
             {project ? (
                 <div className="p-8 ">
-                    <h1 className="old-reddit-font text-4xl font-bold text-blue-400 mb-4">{project.title}</h1>
-                    <p>{project.description}</p>
-                    <div
-                        className="old-reddit-font text-base"> {"Participants:"} {project.participants.join(", ")}</div>
-                    <div className="old-reddit-font text-base">{`Status: ${project.project_status}`}</div>
-
+                    <Descriptions title="Project Info" layout="vertical">
+                        <Descriptions.Item label="Title">{project.title}</Descriptions.Item>
+                        <Descriptions.Item label="Description">{project.description}</Descriptions.Item>
+                        <Descriptions.Item label="Project type">{project.project_type}</Descriptions.Item>
+                        <Descriptions.Item label="Theme">{project.theme}</Descriptions.Item>
+                        <Descriptions.Item label="Status">{project.project_status}</Descriptions.Item>
+                    </Descriptions>
                     {keycloak.authenticated &&
                         (<button onClick={() => setShowPopup(true)} className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Apply</button>)}
 
