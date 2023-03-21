@@ -23,11 +23,13 @@ const NewProject = () => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/skill/names')
-            .then(response => response.json())
-            .then(data => setSkillNames(data));
+        async function fetchSkillNames() {
+            const response = await axios.get('http://localhost:8080/api/v1/skill');
+            const skillNames = response.data.map(skill => skill.name);
+            setSkillNames(skillNames);
+        }
+        fetchSkillNames();
     }, []);
-
     const handleSubmit = async (values) => {
         try {
             const response = await axios.post('http://localhost:8080/api/v1/project/create', values);
