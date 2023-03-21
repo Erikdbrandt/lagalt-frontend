@@ -1,56 +1,47 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import {useUser} from "../components/context/UserContext"
 import keycloak from "../keycloak";
-import {useEffect, useState} from "react";
-import {loginUser, updateUser} from "../api/userService";
-import PopUp from "../components/PopUp"
-
+import { useEffect, useState } from "react";
+import { loginUser, updateUser } from "../api/userService";
+import PopUp from "../components/PopUp";
 
 const Navbar = () => {
-    const [user, setUser] = useState(null);
+    const { user, handleLogin, handleLogout, handleUpdateUser } = useUser();
     const [showPopup, setShowPopup] = useState(false);
-    const [hiddenStatus, setHiddenStatus] = useState(null);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-
-
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-            console.log("User loaded from local storage");
-        } else if (keycloak.authenticated) {
-            console.log("User is authenticated and there is no user");
+        console.log(user)
+        if (!user && keycloak.authenticated) {
             loadUserProfile();
+        }else if(user && !keycloak.authenticated){
+            handleLogout();
         }
-    }, [keycloak.authenticated]);
+    }, [keycloak.authenticated, user]);
 
     const loadUserProfile = async () => {
         try {
-            console.log("about to load user profile");
             const userProfile = await keycloak.loadUserProfile();
-            setUser(userProfile);
-
-            console.log("about to login user");
-            const [error, {user: newUser, isNewUser}] = await loginUser(userProfile, keycloak.realmAccess.roles[1]);
+            const [error, { user: newUser, isNewUser }] = await loginUser(
+                userProfile,
+                keycloak.realmAccess.roles[1]
+            );
 
             if (error) {
                 console.log(error);
+                return;
             }
 
-            if (newUser) {
-                localStorage.setItem("user", JSON.stringify(newUser));
-                console.log("User is set");
-                setUser(newUser);
-
-                if (isNewUser) {
-                    setShowPopup(true);
-                }
+            if (isNewUser) {
+                setShowPopup(true);
             }
+
+            handleLogin(newUser);
         } catch (error) {
             console.error("Error loading user profile:", error);
         }
     };
 
-    const handleLogin = async () => {
+    const handleLoginClick = async () => {
         try {
             await keycloak.login();
             await loadUserProfile();
@@ -59,32 +50,31 @@ const Navbar = () => {
         }
     };
 
-    const handleLogout = async () => {
+    const handleLogoutClick = async () => {
         try {
-            console.log("User is logged out");
-            setUser(null);
-            localStorage.removeItem("user");
+            handleLogout();
             await keycloak.logout();
-            console.log("User is removed");
+
         } catch (error) {
             console.error("Error logging out:", error);
         }
     };
 
-    const handlePopupSubmit = async (status) => {
+    const handlePopupSubmit = async (visibility) => {
         setShowPopup(false);
-        setHiddenStatus(status);
-
-        console.log(status + " is the hidden status");
-
-        const [updateError, updatedUser] = await updateUser(user.user_id, status, user);
+        const [updateError, updatedUser] = await updateUser(
+            user.user_id,
+            visibility,
+            user
+        );
 
         if (updateError) {
-            // handle error
-        } else {
-            console.log(`Updated user with ID: ${user.user_id}`);
+            console.log(updateError);
+            return;
         }
-        // Save user's hidden status to the server or local storage
+
+        handleUpdateUser(updatedUser);
+        console.log(`Updated user with ID: ${user.user_id}`);
     };
 
     return (
@@ -104,7 +94,7 @@ const Navbar = () => {
                 </Link>
             </div>
             <div className="flex items-center">
-                {keycloak.authenticated && (
+                {user && (
                     <>
                         <Link to="/profile">
                             <div className="mr-4 cursor-pointer">Profile</div>
@@ -116,21 +106,17 @@ const Navbar = () => {
                 )}
                 <div>
                     <section className="actions">
-                        {keycloak.authenticated ? (
-                            <button onClick={handleLogout}>Logout</button>
+                        {user ? (
+                            <button onClick={handleLogoutClick}>Logout</button>
                         ) : (
-                            <button onClick={handleLogin}>Login</button>
+                            <button onClick={handleLoginClick}>Login</button>
                         )}
                     </section>
                 </div>
             </div>
-            {showPopup && (
-                <PopUp handlePopupSubmit={handlePopupSubmit}/>
-            )}
+            {showPopup && <PopUp handlePopupSubmit={handlePopupSubmit} />}
         </div>
     );
 };
 
 export default Navbar;
-
-

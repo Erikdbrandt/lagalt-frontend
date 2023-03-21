@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 
 const PopUp = ({ handlePopupSubmit }) => {
-    const [visible, setVisible] = useState("REGULAR");
+    const [visibility, setVisibility] = useState("REGULAR");
 
     const handleStatusChange = (e) => {
-        setVisible(e.target.value);
+        setVisibility(e.target.value);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(visible)
-        handlePopupSubmit(visible);
+        handlePopupSubmit(visibility);
     };
 
     return (
@@ -30,7 +29,7 @@ const PopUp = ({ handlePopupSubmit }) => {
                             id="visible"
                             value="REGULAR"
                             className="mr-2"
-                            checked={visible === "REGULAR"}
+                            checked={visibility === "REGULAR"}
                             onChange={handleStatusChange}
                         />
                         <label htmlFor="visible">Regular</label>
@@ -42,7 +41,7 @@ const PopUp = ({ handlePopupSubmit }) => {
                             id="hidden"
                             value="HIDDEN"
                             className="mr-2"
-                            checked={visible === "HIDDEN"}
+                            checked={visibility === "HIDDEN"}
                             onChange={handleStatusChange}
                         />
                         <label htmlFor="hidden">Hidden</label>
