@@ -26,7 +26,7 @@ const UserProfile = () => {
             {user && (
                 <div>
                     <h4>User</h4>
-                    <p>Name: {user.name}</p>
+                    <p>Name: {user.full_name}</p>
                     <p>Username: {user.email}</p>
                     <p>
                         Visibility: {user.userVisibility === "REGULAR" ? "Visible" : "Hidden"}{" "}

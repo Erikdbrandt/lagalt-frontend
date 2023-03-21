@@ -3,7 +3,7 @@ import {useUser} from "../components/context/UserContext"
 import keycloak from "../keycloak";
 import { useEffect, useState } from "react";
 import { loginUser, updateUser } from "../api/userService";
-import PopUp from "../components/PopUp";
+import PopUp from "../components/PopUps/PopUp";
 
 const Navbar = () => {
     const { user, handleLogin, handleLogout, handleUpdateUser } = useUser();
