@@ -20,7 +20,7 @@ const checkForUser = async (email) => {
     }
 };
 
-const createUser = async (userProfile) => {
+const createUser = async (userProfile, authorityRole) => {
     try {
         const response = await axios.post(
             "http://localhost:8080/api/v1/user/create",
@@ -28,6 +28,7 @@ const createUser = async (userProfile) => {
                 email: userProfile.email,
                 full_name: userProfile.firstName + " " + userProfile.lastName,
                 userVisibility: "REGULAR",
+                authorityType: authorityRole,
             },
             {
                 headers: {
@@ -51,7 +52,7 @@ const createUser = async (userProfile) => {
     }
 };
 
-export const loginUser = async (userProfile) => {
+export const loginUser = async (userProfile, authorityRole) => {
     const [checkError, user] = await checkForUser(userProfile.email);
 
     if (checkError !== null) {
@@ -64,11 +65,43 @@ export const loginUser = async (userProfile) => {
     }
 
     console.log("we got a new user" + userProfile);
-    const [createError, newUser] = await createUser(userProfile);
+    const [createError, newUser] = await createUser(userProfile, authorityRole);
 
     if (createError) {
         return [createError, { user: null, isNewUser: false }];
     }
 
     return [null, { user: newUser, isNewUser: true }];
+};
+
+export const updateUser = async (userId, visibility, userData) => {
+    try {
+        const updatedUserData = {
+            ...userData,
+            userVisibility: visibility,
+        };
+
+        const response = await axios.put(
+            `http://localhost:8080/api/v1/user/update/${userId}`,
+            updatedUserData,
+            {
+                headers: {
+                    Authorization: `Bearer ${keycloak.token}`,
+                },
+            }
+        );
+
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error(
+                `Could not update user with ID: ${userId}`
+            );
+        }
+
+        const user = await response.data;
+
+        console.log(`Updated user with ID: ${userId}`);
+        return [null, user];
+    } catch (error) {
+        return [error.message, []];
+    }
 };

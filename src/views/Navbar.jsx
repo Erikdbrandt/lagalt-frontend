@@ -1,13 +1,18 @@
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import keycloak from "../keycloak";
-import { useEffect, useState } from "react";
-import { loginUser } from "../api/userService";
+import {useEffect, useState} from "react";
+import {loginUser, updateUser} from "../api/userService";
+import PopUp from "../components/PopUp"
+
 
 const Navbar = () => {
     const [user, setUser] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
+    const [hiddenStatus, setHiddenStatus] = useState(null);
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
+
 
         if (storedUser) {
             setUser(JSON.parse(storedUser));
@@ -25,7 +30,7 @@ const Navbar = () => {
             setUser(userProfile);
 
             console.log("about to login user");
-            const [error, { user: newUser, isNewUser }] = await loginUser(userProfile);
+            const [error, {user: newUser, isNewUser}] = await loginUser(userProfile, keycloak.realmAccess.roles[1]);
 
             if (error) {
                 console.log(error);
@@ -37,7 +42,7 @@ const Navbar = () => {
                 setUser(newUser);
 
                 if (isNewUser) {
-                    alert("Welcome, new user! Please fill out your additional information.");
+                    setShowPopup(true);
                 }
             }
         } catch (error) {
@@ -64,6 +69,22 @@ const Navbar = () => {
         } catch (error) {
             console.error("Error logging out:", error);
         }
+    };
+
+    const handlePopupSubmit = async (status) => {
+        setShowPopup(false);
+        setHiddenStatus(status);
+
+        console.log(status + " is the hidden status");
+
+        const [updateError, updatedUser] = await updateUser(user.user_id, status, user);
+
+        if (updateError) {
+            // handle error
+        } else {
+            console.log(`Updated user with ID: ${user.user_id}`);
+        }
+        // Save user's hidden status to the server or local storage
     };
 
     return (
@@ -103,8 +124,13 @@ const Navbar = () => {
                     </section>
                 </div>
             </div>
+            {showPopup && (
+                <PopUp handlePopupSubmit={handlePopupSubmit}/>
+            )}
         </div>
     );
 };
 
 export default Navbar;
+
+
