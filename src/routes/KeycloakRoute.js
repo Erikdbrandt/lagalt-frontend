@@ -10,14 +10,17 @@ import keycloak from "../keycloak";
 function KeycloakRoute({ children, role, redirectTo = "/" }) {
 
     if (!keycloak.authenticated) {
+        console.log("not authenticated")
         return <Navigate replace to={redirectTo} />;
     }
 
+/*
     if (keycloak.hasRealmRole(role)) {
         return <>{children}</>;
     }
+*/
 
-    return <Navigate replace to={redirectTo} />;
+    return <>{children}</>;
 }
 
 export default KeycloakRoute;
