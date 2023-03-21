@@ -10,7 +10,7 @@ import {
     Switch,
     Upload,
 } from 'antd';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Modal} from 'antd';
 import axios from 'axios';
 
@@ -19,8 +19,14 @@ const {TextArea} = Input;
 const {confirm} = Modal;
 const NewProject = () => {
     const [componentDisabled, setComponentDisabled] = useState(true);
-
+    const [skillNames, setSkillNames] = useState([]);
     const [form] = Form.useForm();
+
+    useEffect(() => {
+        fetch('http://localhost:8080/api/v1/skill/names')
+            .then(response => response.json())
+            .then(data => setSkillNames(data));
+    }, []);
 
     const handleSubmit = async (values) => {
         try {
@@ -54,13 +60,21 @@ const NewProject = () => {
                     maxWidth: 600,
                 }}
             >
-                <Form.Item label="Skills" name="disabled" valuePropName="checked" className="mt-5">
-                    <div>
-                        <Checkbox>Java</Checkbox>
-                        <Checkbox>JavaScript</Checkbox>
-                        <Checkbox>React</Checkbox>
-                    </div>
+                <div  className="mt-5">
+                <Form.Item
+                    label="Skills"
+                    name="skills"
+                    valuePropName="checked"
+                >
+                    <Checkbox.Group>
+                        {skillNames.map(skillName => (
+                            <Checkbox key={skillName} value={skillName}>
+                                {skillName}
+                            </Checkbox>
+                        ))}
+                    </Checkbox.Group>
                 </Form.Item>
+                </div>
                 <Form.Item label="Type">
                     <Radio.Group>
                         <Radio value="MOVIE"> MOVIE </Radio>
@@ -75,19 +89,19 @@ const NewProject = () => {
                 <Form.Item label="Theme" name="theme">
                     <Input/>
                 </Form.Item>
-                <Form.Item label="DatePicker">
-                    <DatePicker/>
-                </Form.Item>
-                <Form.Item label="RangePicker">
-                    <RangePicker/>
-                </Form.Item>
-                <Form.Item label="InputNumber">
-                    <InputNumber/>
-                </Form.Item>
+                {/*<Form.Item label="DatePicker">*/}
+                {/*    <DatePicker/>*/}
+                {/*</Form.Item>*/}
+                {/*<Form.Item label="RangePicker">*/}
+                {/*    <RangePicker/>*/}
+                {/*</Form.Item>*/}
+                {/*<Form.Item label="InputNumber">*/}
+                {/*    <InputNumber/>*/}
+                {/*</Form.Item>*/}
                 <Form.Item label="Description" name="description">
                     <TextArea rows={4}/>
                 </Form.Item>
-                <Form.Item label="Switch" valuePropName="checked">
+                <Form.Item label="Status" valuePropName="checked">
                     <Switch/>
                 </Form.Item>
                 <Form.Item label="Upload" valuePropName="fileList">
