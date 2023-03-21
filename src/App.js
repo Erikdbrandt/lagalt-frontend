@@ -7,6 +7,7 @@ import UserProfile from "./views/UserProfile";
 import StartPage from "./views/StartPage";
 import KeycloakRoute from "./routes/KeycloakRoute";
 import {ROLES} from "./const/roles";
+import NewProject from "./views/NewProject";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/project/:id" element={<ProjectView/>}/>
                     <Route path="/profile" element={<KeycloakRoute role={ROLES.offline_access}><UserProfile/></KeycloakRoute>}/>
                     <Route path="/startpage" element={<KeycloakRoute role={ROLES.offline_access}><StartPage/></KeycloakRoute>}/>
+                    <Route path="/new-project" element={<KeycloakRoute role={ROLES.offline_access}><NewProject/></KeycloakRoute>}/>
 
                 </Routes>
             </div>

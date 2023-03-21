@@ -4,6 +4,7 @@ import axios from 'axios';
 import keycloak from "../../keycloak";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {Link} from "react-router-dom";
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
@@ -43,17 +44,12 @@ const ProjectList = () => {
         setFilterType(event.target.value);
     }
 
-    const handleAddProject = () => {
-        // Implement logic to add a new project
-        console.log('Add project clicked');
-    }
-
-
     // Get a list of all project types
     const projectTypes = [...new Set(projects.map(project => project.project_type))];
 
     return (
         <div>
+        <div className="py-5">
             <label htmlFor="project-type-filter">Filter by project type:</label>
             <select id="project-type-filter" value={filterType} onChange={handleFilterChange}>
                 <option value="">All</option>
@@ -61,13 +57,14 @@ const ProjectList = () => {
                     <option key={projectType} value={projectType}>{projectType}</option>
                 ))}
             </select>
+        </div>
 
             {filteredProjects.map((project) => (
-                <ProjectCard key={project.id} project={project}/>
+                <ProjectCard key={project.id} project={project} />
             ))}
             {keycloak.authenticated && (
                 <div className="mt-5 flex items-center justify-center ">
-                    <button onClick={handleAddProject}><FontAwesomeIcon icon={faPlus} size="3x"/></button>
+                    <Link to="/new-project"><FontAwesomeIcon icon={faPlus} size="3x" color="#a9a9a9"/></Link>
                 </div>)}
         </div>
     );
