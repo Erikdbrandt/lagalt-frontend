@@ -10,6 +10,7 @@ const Navbar = () => {
     const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
+        console.log(keycloak.token);
         console.log(user)
         if (!user && keycloak.authenticated) {
             loadUserProfile();
