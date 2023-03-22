@@ -94,7 +94,7 @@ const Navbar = () => {
                 </Link>
             </div>
             <div className="flex items-center">
-                {user && (
+                {keycloak.authenticated && (
                     <>
                         <Link to="/profile">
                             <div className="mr-4 cursor-pointer">Profile</div>
@@ -106,7 +106,7 @@ const Navbar = () => {
                 )}
                 <div>
                     <section className="actions">
-                        {user ? (
+                        {keycloak.authenticated ? (
                             <button onClick={handleLogoutClick}>Logout</button>
                         ) : (
                             <button onClick={handleLoginClick}>Login</button>

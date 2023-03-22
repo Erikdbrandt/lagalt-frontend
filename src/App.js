@@ -17,13 +17,13 @@ function App() {
                 <Routes>
                     <Route path="/" element={<MainPage/>}/>
                     <Route path="/m" element={<MainPage/>}/>
-                    <Route path="/user" element={<KeycloakRoute role={ROLES.offline_access}><MainPage/></KeycloakRoute>}/>
+                    <Route path="/user" element={<KeycloakRoute><MainPage/></KeycloakRoute>}/>
                     <Route path="/project/:id" element={<ProjectView/>}/>
                     <Route path="/profile" element={<KeycloakRoute> <UserProfile/> </KeycloakRoute>}/>
                     <Route path="/startpage" element={<KeycloakRoute><StartPage/></KeycloakRoute>}/>
-                    <Route path="/profile" element={<KeycloakRoute role={ROLES.offline_access}><UserProfile/></KeycloakRoute>}/>
-                    <Route path="/startpage" element={<KeycloakRoute role={ROLES.offline_access}><StartPage/></KeycloakRoute>}/>
-                    <Route path="/new-project" element={<KeycloakRoute role={ROLES.offline_access}><NewProject/></KeycloakRoute>}/>
+                    <Route path="/profile" element={<KeycloakRoute><UserProfile/></KeycloakRoute>}/>
+                    <Route path="/startpage" element={<KeycloakRoute><StartPage/></KeycloakRoute>}/>
+                    <Route path="/new-project" element={<KeycloakRoute><NewProject/></KeycloakRoute>}/>
 
                 </Routes>
             </div>
