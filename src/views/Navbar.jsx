@@ -10,7 +10,6 @@ const Navbar = () => {
     const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
-        console.log(user)
         if (!user && keycloak.authenticated) {
             loadUserProfile();
         }else if(user && !keycloak.authenticated){
@@ -21,7 +20,7 @@ const Navbar = () => {
     const loadUserProfile = async () => {
         try {
             const userProfile = await keycloak.loadUserProfile();
-            const [error, { user: newUser, isNewUser }] = await loginUser(
+            const [error, { user: user, isNewUser }] = await loginUser(
                 userProfile,
                 keycloak.realmAccess.roles[1]
             );
@@ -35,7 +34,7 @@ const Navbar = () => {
                 setShowPopup(true);
             }
 
-            handleLogin(newUser);
+            handleLogin(user);
         } catch (error) {
             console.error("Error loading user profile:", error);
         }
@@ -62,9 +61,11 @@ const Navbar = () => {
 
     const handlePopupSubmit = async (visibility) => {
         setShowPopup(false);
+
+        user.userVisibility = visibility;
+
         const [updateError, updatedUser] = await updateUser(
             user.user_id,
-            visibility,
             user
         );
 

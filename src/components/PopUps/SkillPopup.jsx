@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getAllSkills } from "../../api/skills";
+import AddSkillPopup from "./AddSkillPopup"
+
 
 const SkillPopup = ({ onSaveSkills, onCancel }) => {
     const [allSkills, setAllSkills] = useState([]);
     const [selectedSkills, setSelectedSkills] = useState([]);
+
+    const [showAddSkillPopup, setShowAddSkillPopup] = useState(false);
+
 
     useEffect(() => {
         async function fetchSkills() {
@@ -16,6 +21,7 @@ const SkillPopup = ({ onSaveSkills, onCancel }) => {
 
             setAllSkills(skills);
         }
+
 
         fetchSkills();
     }, []);
@@ -41,6 +47,14 @@ const SkillPopup = ({ onSaveSkills, onCancel }) => {
         onCancel();
     }
 
+    const handleAddSkill = (newSkill) => {
+
+
+
+        setAllSkills([...allSkills, newSkill]);
+        setShowAddSkillPopup(false);
+    };
+
     return (
         <div className="fixed z-10 inset-0 overflow-y-auto">
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -54,7 +68,7 @@ const SkillPopup = ({ onSaveSkills, onCancel }) => {
                 <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
 
                 <div
-                    className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                    className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full max-h-96 "
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-headline"
@@ -83,7 +97,19 @@ const SkillPopup = ({ onSaveSkills, onCancel }) => {
                             ))}
                         </div>
                     </div>
-                    <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                    {showAddSkillPopup ? (
+                        <AddSkillPopup onAddSkill={handleAddSkill} onCancel={() => setShowAddSkillPopup(false)} />
+                    ) : (
+                        <button
+                            type="button"
+                            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-500 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm mt-4"
+                            onClick={() => setShowAddSkillPopup(true)}
+                        >
+                            Add Skill
+                        </button>
+                    )}
+
+                    <div className="mt-2 sm:mt-2 sm:flex sm:flex-row-reverse">
                         <button
                             type="button"
                             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"

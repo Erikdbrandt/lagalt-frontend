@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useUser } from "../components/context/UserContext";
-import { updateUser } from "../api/userService";
+import {updateSkillsInUser, updateUser} from "../api/userService";
 import SkillPopup from "../components/PopUps/SkillPopup";
 
 const UserProfile = () => {
@@ -10,7 +10,10 @@ const UserProfile = () => {
 
     const toggleVisibility = async () => {
         const updatedVisibility = visibility === "REGULAR" ? "HIDDEN" : "REGULAR";
-        const [error, updatedUser] = await updateUser(user.user_id, updatedVisibility, user);
+
+        user.userVisibility = updatedVisibility;
+
+        const [error, updatedUser] = await updateUser(user.user_id, user);
 
         if (error) {
             console.log(error);
@@ -25,9 +28,23 @@ const UserProfile = () => {
         setShowPopup(!showPopup);
     };
 
-    const handleSaveSkills = (selectedSkills) => {
-        console.log(selectedSkills);
-        // Do something with the selected skills
+    const handleSaveSkills = async (selectedSkills) => {
+        // Create a new array of skill IDs
+        const skillIds = selectedSkills.map(skill => skill.skill_id);
+
+        // Combine the selected skill IDs array with the existing user.skills array
+        const updatedSkills = [...user.skills, ...skillIds];
+
+        // Call the API to update the user's skills
+        const [error, updatedUser] = await updateSkillsInUser(user.user_id, updatedSkills);
+
+        if (error) {
+            console.log(error);
+            return;
+        }
+
+        handleUpdateUser(updatedUser);
+
         togglePopup();
     };
 
