@@ -28,6 +28,7 @@ const NewProject = () => {
             const skillNames = response.data.map(skill => skill.name);
             setSkillNames(skillNames);
         }
+
         fetchSkillNames();
     }, []);
     const handleSubmit = async (values) => {
@@ -62,20 +63,20 @@ const NewProject = () => {
                     maxWidth: 600,
                 }}
             >
-                <div  className="mt-5">
-                <Form.Item
-                    label="Skills"
-                    name="skills"
-                    valuePropName="checked"
-                >
-                    <Checkbox.Group>
-                        {skillNames.map(skillName => (
-                            <Checkbox key={skillName} value={skillName}>
-                                {skillName}
-                            </Checkbox>
-                        ))}
-                    </Checkbox.Group>
-                </Form.Item>
+                <div className="mt-5">
+                    <Form.Item
+                        label="Skills"
+                        name="skills"
+                        valuePropName="checked"
+                    >
+                        <Checkbox.Group>
+                            {skillNames.map(skillName => (
+                                <Checkbox key={skillName} value={skillName}>
+                                    {skillName}
+                                </Checkbox>
+                            ))}
+                        </Checkbox.Group>
+                    </Form.Item>
                 </div>
                 <Form.Item label="Type">
                     <Radio.Group>
