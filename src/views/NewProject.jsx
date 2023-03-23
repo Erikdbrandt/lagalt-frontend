@@ -193,7 +193,7 @@ const NewProject = () => {
                 </Form.Item>
                 <Modal
                     title="Project Created"
-                    visible={isModalVisible}
+                    open={isModalVisible}
                     onOk={() => {
                         setIsModalVisible(false);
                     }}
