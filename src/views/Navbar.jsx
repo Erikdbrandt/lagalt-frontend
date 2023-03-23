@@ -4,14 +4,14 @@ import keycloak from "../keycloak";
 import { useEffect, useState } from "react";
 import { loginUser, updateUser } from "../api/userService";
 import PopUp from "../components/PopUps/PopUp";
+import Search from "../components/search/Search";
+
 
 const Navbar = () => {
     const { user, handleLogin, handleLogout, handleUpdateUser } = useUser();
     const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
-        console.log(keycloak.token);
-        console.log(user)
         if (!user && keycloak.authenticated) {
             loadUserProfile();
         }else if(user && !keycloak.authenticated){
@@ -94,6 +94,12 @@ const Navbar = () => {
                     </div>
                 </Link>
             </div>
+
+            <div>
+               <Search/>
+               {/* <Search projects={projects} />*/}
+            </div>
+
             <div className="flex items-center">
                 {keycloak.authenticated && (
                     <>

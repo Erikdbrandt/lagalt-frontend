@@ -5,6 +5,7 @@ import keycloak from "../../keycloak";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Link} from "react-router-dom";
+import Search from "../search/Search";
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
@@ -49,6 +50,10 @@ const ProjectList = () => {
 
     return (
         <div>
+            {/*<Search projects={projects} />*/}
+            {/*{filteredProjects.map((project) =>(*/}
+            {/*    <ProjectCard project={project}/>*/}
+            {/*))}*/}
         <div className="py-5">
             <label htmlFor="project-type-filter">Filter by project type:</label>
             <select id="project-type-filter" value={filterType} onChange={handleFilterChange}>

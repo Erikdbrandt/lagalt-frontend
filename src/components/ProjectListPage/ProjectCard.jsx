@@ -1,7 +1,6 @@
 import {Link} from "react-router-dom";
 
 const ProjectCard = ({project}) => {
-
     return (
         <div className="border-2 bg-white p-5 flex">
             <div className="card_left flex-none mr-5">

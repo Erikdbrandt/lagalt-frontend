@@ -21,8 +21,8 @@ function App() {
                     <Route path="/project/:id" element={<ProjectView/>}/>
                     <Route path="/profile" element={<KeycloakRoute> <UserProfile/> </KeycloakRoute>}/>
                     <Route path="/startpage" element={<KeycloakRoute><StartPage/></KeycloakRoute>}/>
-                    <Route path="/profile" element={<KeycloakRoute><UserProfile/></KeycloakRoute>}/>
-                    <Route path="/startpage" element={<KeycloakRoute><StartPage/></KeycloakRoute>}/>
+                    {/*<Route path="/profile" element={<KeycloakRoute><UserProfile/></KeycloakRoute>}/>*/}
+                    {/*<Route path="/startpage" element={<KeycloakRoute><StartPage/></KeycloakRoute>}/>*/}
                     <Route path="/new-project" element={<KeycloakRoute><NewProject/></KeycloakRoute>}/>
 
                 </Routes>
