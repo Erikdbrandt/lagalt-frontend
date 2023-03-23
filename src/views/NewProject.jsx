@@ -10,7 +10,7 @@ import {
     Space,
     Modal
 } from 'antd';
-import {useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import axios from 'axios';
 
 const {TextArea} = Input;
@@ -21,13 +21,15 @@ const NewProject = () => {
     const [form] = Form.useForm();
     const [showCreateSkillForm, setShowCreateSkillForm] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedSkills, setSelectedSkills] = useState([]);
 
     const handleCreateSkill = async (values) => {
         try {
             const response = await axios.post('http://localhost:8080/api/v1/skill/create', values);
+            const newSkill = { name: values.name, skill_id: response.data.skill_id };
             console.log(response.data);
             form.resetFields();
-            setSkill([...skill, values.name]);
+            setSkill([...skill, newSkill]);
             setShowCreateSkillForm(false);
         } catch (error) {
             console.error(error);
@@ -38,8 +40,8 @@ const NewProject = () => {
         async function fetchSkillNames() {
             try {
                 const response = await axios.get('http://localhost:8080/api/v1/skill');
-                const skillNames = response.data.map(skill => skill.name);
-                setSkill(skillNames);
+                const skill = response.data;
+                setSkill(skill);
             } catch (error) {
                 console.error(error);
             }
@@ -48,15 +50,28 @@ const NewProject = () => {
         fetchSkillNames();
     }, []);
     const handleSubmit = async (values) => {
+
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/project/create', values);
+            const formData = { ...values, skills: selectedSkills };
+            console.log(values)
+            const response = await axios.post('http://localhost:8080/api/v1/project/create', formData);
             console.log(response.data);
             form.resetFields();
             setIsModalVisible(true);
-
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const handleCheckboxChange = (checkedValues) => {
+        const selectedSkillIds = checkedValues.map((skillName) => {
+            const selectedSkill = skill.find((s) => s.name === skillName);
+            return selectedSkill ? selectedSkill.skill_id : null;
+        });
+        setSelectedSkills(selectedSkillIds);
+    };
+    const handleCancel = () => {
+        setShowCreateSkillForm(false);
     };
 
     return (
@@ -67,59 +82,63 @@ const NewProject = () => {
             >
                 Form disabled
             </Checkbox>
-
-            <div className="mt-3">
+            <Form
+                disabled={componentDisabled}>
                 <Form.Item
                     label="Skills"
                     name="skills"
                     valuePropName="checked"
+                    className="mt-3"
                 >
-
-                    <Checkbox.Group style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
-                        {skill.map(skillName => (
-                            <Checkbox key={skillName} value={skillName} className="mb-2">
-                                {skillName}
+                    <Checkbox.Group style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)'}}
+                                    onChange={handleCheckboxChange}>
+                        {skill.map((skill) => (
+                            <Checkbox key={skill.id} value={skill.name} className="mb-2">
+                                {skill.name}
                             </Checkbox>
                         ))}
 
                     </Checkbox.Group>
-
-                    <div className="mt-5">
-                        {showCreateSkillForm ? (
-                            <Form
-                                onFinish={handleCreateSkill}
-                                name="wrap"
-                                labelCol={{flex: '110px'}}
-                                labelAlign="left"
-                                labelWrap
-                                wrapperCol={{flex: 1}}
-                                colon={false}
-                                style={{maxWidth: 600}}
-                            >
-                                <Form.Item label="Name" name="name" rules={[{required: true}]}>
-                                    <Input/>
-                                </Form.Item>
-
-                                <Form.Item label="Description" name="description">
-                                    <Input/>
-                                </Form.Item>
-
-                                <Form.Item label=" ">
-                                    <Button htmlType="submit">
-                                        Submit
-                                    </Button>
-                                </Form.Item>
-                            </Form>
-                        ) : (
-                            <Space wrap className="mt-3">
-
-                                <Button type="dashed" onClick={() => setShowCreateSkillForm(true)}>Add new
-                                    skill</Button>
-                            </Space>
-                        )}
-                    </div>
                 </Form.Item>
-            </div>
+            </Form>
+
+            {showCreateSkillForm ? (
+                <Form
+                    onFinish={handleCreateSkill}
+                    name="wrap"
+                    labelCol={{flex: '110px'}}
+                    labelAlign="left"
+                    labelWrap
+                    wrapperCol={{flex: 1}}
+                    colon={false}
+                    style={{maxWidth: 600}}
+                    disabled={componentDisabled}
+                >
+                    <Form.Item label="Name" name="name" rules={[{required: true}]}>
+                        <Input/>
+                    </Form.Item>
+
+                    <Form.Item label="Description" name="description">
+                        <Input/>
+                    </Form.Item>
+
+                    <Form.Item label=" ">
+                        <Button htmlType="submit" className="mr-4">
+                            Submit
+                        </Button>
+                        <Button htmlType="submit" onClick={handleCancel}>
+                            Cancel
+                        </Button>
+                    </Form.Item>
+                </Form>
+            ) : (
+                <Space wrap className="mt-1">
+
+                    <Button type="dashed" onClick={() => setShowCreateSkillForm(true)} className="mb-5 ml-10">Add new
+                        skill</Button>
+                </Space>
+            )}
+
             <Form
                 onFinish={handleSubmit}
                 labelCol={{
@@ -135,7 +154,7 @@ const NewProject = () => {
                 }}
             >
 
-                <Form.Item label="Type">
+                <Form.Item label="Type" name="project_type">
                     <Radio.Group>
                         <Radio value="MOVIE"> MOVIE </Radio>
                         <Radio value="MUSIC"> MUSIC </Radio>
@@ -187,3 +206,4 @@ const NewProject = () => {
     );
 };
 export default () => <NewProject/>;
+
