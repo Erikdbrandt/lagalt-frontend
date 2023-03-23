@@ -27,8 +27,8 @@ const createUser = async (userProfile, authorityRole) => {
             {
                 email: userProfile.email,
                 full_name: userProfile.firstName + " " + userProfile.lastName,
-                userVisibility: "REGULAR",
-                authorityType: authorityRole,
+                userVisibility: "REGULAR"
+             //   authorityType: authorityRole,
             },
             {
                 headers: {
@@ -74,16 +74,12 @@ export const loginUser = async (userProfile, authorityRole) => {
     return [null, { user: newUser, isNewUser: true }];
 };
 
-export const updateUser = async (userId, visibility, userData) => {
+export const updateSkillsInUser = async (userId, skills) => {
     try {
-        const updatedUserData = {
-            ...userData,
-            userVisibility: visibility,
-        };
 
         const response = await axios.put(
-            `http://localhost:8080/api/v1/user/update/${userId}`,
-            updatedUserData,
+            `http://localhost:8080/api/v1/user/update/skills/${userId}`,
+            skills,
             {
                 headers: {
                     Authorization: `Bearer ${keycloak.token}`,
@@ -99,6 +95,46 @@ export const updateUser = async (userId, visibility, userData) => {
 
         const user = await response.data;
 
+        console.log(user)
+        console.log(`Updated user with ID: ${userId}`);
+        return [null, user];
+    } catch (error) {
+        return [error.message, []];
+    }
+};
+
+export const updateUser = async (userId, userData) => {
+    try {
+        const updatedUserData = {
+            ...userData,
+
+        };
+
+        console.log(updatedUserData)
+
+        console.log("we are here ")
+        const response = await axios.put(
+            `http://localhost:8080/api/v1/user/update/${userId}`,
+            updatedUserData,
+            {
+                headers: {
+                    Authorization: `Bearer ${keycloak.token}`,
+                },
+            }
+        );
+
+        console.log(response.status)
+
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error(
+                `Could not update user with ID: ${userId}`
+            );
+        }
+
+
+        const user = await response.data;
+
+        console.log(user)
         console.log(`Updated user with ID: ${userId}`);
         return [null, user];
     } catch (error) {
