@@ -6,7 +6,6 @@ import {Route, BrowserRouter, Routes} from "react-router-dom";
 import UserProfile from "./views/UserProfile";
 import StartPage from "./views/StartPage";
 import KeycloakRoute from "./routes/KeycloakRoute";
-import {ROLES} from "./const/roles";
 import NewProject from "./views/NewProject";
 
 function App() {
