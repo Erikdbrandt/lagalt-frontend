@@ -13,9 +13,28 @@ const Navbar = () => {
         console.log(user)
         if (!user && keycloak.authenticated) {
             loadUserProfile();
-        }else if(user && !keycloak.authenticated){
+        } else if (user && !keycloak.authenticated) {
             handleLogout();
         }
+
+
+        const tokenRefreshInterval = setInterval(() => {
+            if (keycloak.authenticated) {
+                keycloak.updateToken(1)
+                    .then(refreshed => {
+                        if (refreshed) {
+                            console.log("Token refreshed");
+                        } else {
+                            console.log("Token not refreshed, valid for another "
+                                + Math.round(keycloak.tokenParsed.exp + keycloak.timeSkew - new Date().getTime() / 1000)
+                                + " seconds");
+                        }
+                    })
+                    .catch(error => console.error("Error refreshing token:", error));
+            }
+        }, 5000);
+
+        return () => clearInterval(tokenRefreshInterval);
     }, [keycloak.authenticated, user]);
 
     const loadUserProfile = async () => {

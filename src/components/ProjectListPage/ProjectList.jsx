@@ -5,6 +5,7 @@ import keycloak from "../../keycloak";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Link} from "react-router-dom";
+import {getAllProjects} from "../../api/projects"
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
@@ -20,11 +21,15 @@ const ProjectList = () => {
                     //     Authorization: `Bearer ${keycloak.token}`
                     // }
                 });
-                setProjects(response.data);
+
+                const projects = await getAllProjects()
+
+                setProjects(projects);
             } catch (error) {
                 console.error(error);
             }
         };
+
         fetchProjects();
     }, []);
 
