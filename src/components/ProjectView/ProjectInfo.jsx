@@ -20,6 +20,7 @@ const ProjectInfo = () => {
             .then((response) => response.json())
             .then((data) => setProject(data))
             .catch((error) => console.error(error));
+
     }, [id]);
 
     useEffect(() => {

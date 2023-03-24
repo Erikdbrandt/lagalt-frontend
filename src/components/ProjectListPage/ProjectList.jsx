@@ -1,30 +1,43 @@
 import ProjectCard from "./ProjectCard";
 import {useState, useEffect} from 'react';
-import axios from 'axios';
 import keycloak from "../../keycloak";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Link} from "react-router-dom";
 import Search from "../search/Search";
+import {getAllProjects} from "../../api/projects"
+import {getAllUsers} from "../../api/userService"
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
+    const [allUsers, setUsers] = useState([]);
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [filterType, setFilterType] = useState('');
-// Fetch projects from the backend
+
+    // Fetch projects from the backend
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/v1/project', {
-                    // headers: {
-                    //     Authorization: `Bearer ${keycloak.token}`
-                    // }
-                });
-                setProjects(response.data);
+
+                const projects = await getAllProjects()
+
+                setProjects(projects);
             } catch (error) {
                 console.error(error);
             }
         };
+
+        const fetchAllUsers = async () => {
+            try {
+                const users = await getAllUsers()
+                setUsers(users);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchAllUsers();
+
         fetchProjects();
     }, []);
 
@@ -61,7 +74,7 @@ const ProjectList = () => {
         </div>
 
             {filteredProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard key={project.id} project={project} allUsers={allUsers} />
             ))}
             {keycloak.authenticated && (
                 <div className="mt-5 flex items-center justify-center ">

@@ -141,3 +141,23 @@ export const updateUser = async (userId, userData) => {
         return [error.message, []];
     }
 };
+
+// get all users
+
+export const getAllUsers = async () => {
+    try {
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/user`,
+            {
+                headers: {
+                    Authorization: `Bearer ${keycloak.token}`,
+                },
+            }
+        );
+
+        return response.data;
+    }catch (error) {
+        console.error(error);
+        return [];
+    }
+}

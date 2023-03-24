@@ -4,6 +4,7 @@ import { updateSkillsInUser, updateUser } from "../api/userService";
 import SkillPopup from "../components/PopUps/SkillPopup";
 import { getAllSkills } from "../api/skills";
 
+
 const UserProfile = () => {
     const { user, handleUpdateUser } = useUser();
     const [visibility, setVisibility] = useState(user.userVisibility);
