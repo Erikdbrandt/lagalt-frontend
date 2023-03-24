@@ -7,6 +7,7 @@ import UserProfile from "./views/UserProfile";
 import StartPage from "./views/StartPage";
 import KeycloakRoute from "./routes/KeycloakRoute";
 import NewProject from "./views/NewProject";
+import ProjectInfo from "./components/ProjectView/ProjectInfo";
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                     <Route path="/profile" element={<KeycloakRoute> <UserProfile/> </KeycloakRoute>}/>
                     <Route path="/startpage" element={<KeycloakRoute><StartPage/></KeycloakRoute>}/>
                     <Route path="/new-project" element={<KeycloakRoute><NewProject/></KeycloakRoute>}/>
+                    <Route path="/project-info" element={<KeycloakRoute><ProjectInfo/></KeycloakRoute>}/>
 
                 </Routes>
             </div>

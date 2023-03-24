@@ -1,4 +1,4 @@
-import {PlusOutlined} from '@ant-design/icons';
+import {CheckSquareFilled, PlusOutlined} from '@ant-design/icons';
 import {
     Button,
     Checkbox,
@@ -10,9 +10,10 @@ import {
     Space,
     Modal
 } from 'antd';
-import {useState, useEffect} from 'react';
+import {useState, useEffect } from 'react';
 import axios from 'axios';
 import {useUser} from "../components/context/UserContext";
+import { useNavigate } from 'react-router-dom';
 
 const {TextArea} = Input;
 
@@ -24,6 +25,8 @@ const NewProject = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedSkills, setSelectedSkills] = useState([]);
     const {user} = useUser();
+    const [showPopup, setShowPopup] = useState(false);
+    const navigate = useNavigate();
 
     const handleCreateSkill = async (values) => {
 
@@ -80,6 +83,22 @@ const NewProject = () => {
     const handleCancel = () => {
         setShowCreateSkillForm(false);
     };
+
+    useEffect(() => {
+        let timer;
+        if (showPopup) {
+            timer = setTimeout(() => {
+                setShowPopup(false);
+                navigate('/project-info');
+            }, 2000);
+        }
+        return () => clearTimeout(timer);
+    }, [showPopup, navigate]);
+
+    function handleCreate() {
+        setShowPopup(true);
+    }
+
 
     return (
         <>
@@ -196,18 +215,20 @@ const NewProject = () => {
                     </Upload>
                 </Form.Item>
                 <Form.Item>
-                    <Button htmlType="submit">Create</Button>
+                    <Button htmlType="submit" onClick={handleCreate}>Create</Button>
                 </Form.Item>
-                <Modal
-                    title="Project Created"
-                    open={isModalVisible}
-                    onOk={() => {
-                        setIsModalVisible(false);
-                    }}
-                    onCancel={() => setIsModalVisible(false)}
-                >
-                    <p>The project has been successfully created.</p>
-                </Modal>
+
+                {showPopup ? (
+                    <div
+                        className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center p-5">
+                        <div className="bg-white w-1/3 h-1/3 rounded-md flex flex-col justify-center items-center p-1">
+                            <p className="text-2xl p-5">Project is created!</p>
+
+                            <CheckSquareFilled  style={{ color: '#8fbc8f', fontSize: '50px' }} />
+
+                        </div>
+                    </div>
+                ) : null}
             </Form>
         </>
     );

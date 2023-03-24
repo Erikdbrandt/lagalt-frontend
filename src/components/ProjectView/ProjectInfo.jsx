@@ -2,6 +2,7 @@ import {Link, useParams} from "react-router-dom"
 import {useEffect, useState} from "react"
 import keycloak from "../../keycloak";
 import {Badge, Descriptions} from 'antd';
+import { CheckSquareFilled } from '@ant-design/icons';
 
 const ProjectInfo = () => {
     const {id} = useParams(); // extract project ID from URL path
@@ -10,18 +11,9 @@ const ProjectInfo = () => {
     const [skillNames, setSkillNames] = useState([])
     const [ownerName, setOwnerName] = useState("")
 
-    const handleApplyClick = () => {
-        setShowPopup(true);
-    };
-
-    const handleOkClick = () => {
+    function handleOverlayClick() {
         setShowPopup(false);
-        // Add logic here to apply for the project
-    };
-
-    const handleCancelClick = () => {
-        setShowPopup(false);
-    };
+    }
 
     useEffect(() => {
         // Fetch project data from API using the project ID
@@ -68,7 +60,7 @@ const ProjectInfo = () => {
                     </Descriptions>
                     {keycloak.authenticated &&
                         (<button onClick={() => setShowPopup(true)}
-                                 className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Apply</button>)}
+                                 className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Join</button>)}
 
                 </div>
             ) : (
@@ -77,22 +69,13 @@ const ProjectInfo = () => {
 
             {showPopup ? (
                 <div
-                    className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center p-5">
+                    className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center p-5"
+                    onClick={handleOverlayClick} >
                     <div className="bg-white w-1/3 h-1/3 rounded-md flex flex-col justify-center items-center p-1">
-                        <p className="text-2xl p-5">Your information will be shared with the owner.</p>
-                        <p className="text-2xl p-5">Please give a motivation to apply to the project</p>
+                        <p className="text-2xl p-5">Welcome to the project!</p>
 
-                        <textarea className="border-2 border-gray-300 p-2 rounded-md w-3/4 h-1/3"
-                                  placeholder="Type your motivation here..."></textarea>
+                        <CheckSquareFilled  style={{ color: '#8fbc8f', fontSize: '50px' }} />
 
-                        <div className="flex justify-center items-center mt-4">
-                            <button onClick={handleOkClick}
-                                    className="bg-blue-400 text-white font-bold py-2 px-4 rounded mr-4">OK
-                            </button>
-                            <button onClick={handleCancelClick}
-                                    className="bg-blue-400 text-white font-bold py-2 px-4 rounded">Cancel
-                            </button>
-                        </div>
                     </div>
                 </div>
             ) : null}
