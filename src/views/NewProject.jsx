@@ -7,13 +7,12 @@ import {
     Radio,
     Switch,
     Upload,
-    Space,
-    Modal
+    Space
 } from 'antd';
-import {useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import axios from 'axios';
-import {useUser} from "../components/context/UserContext";
-import { useNavigate } from 'react-router-dom';
+import { useUser} from "../components/context/UserContext";
+import {useNavigate} from 'react-router-dom';
 
 const {TextArea} = Input;
 
@@ -22,7 +21,6 @@ const NewProject = () => {
     const [skill, setSkill] = useState([]);
     const [form] = Form.useForm();
     const [showCreateSkillForm, setShowCreateSkillForm] = useState(false);
-    const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedSkills, setSelectedSkills] = useState([]);
     const {user} = useUser();
     const [showPopup, setShowPopup] = useState(false);
@@ -67,7 +65,11 @@ const NewProject = () => {
             const response = await axios.post('http://localhost:8080/api/v1/project/create', formData);
             console.log(response.data);
             form.resetFields();
-            setIsModalVisible(true);
+
+            setTimeout(function () {
+                navigate(`/project/${response.data.project_id}`);
+            }, 2000);
+
         } catch (error) {
             console.error(error);
         }
@@ -89,7 +91,6 @@ const NewProject = () => {
         if (showPopup) {
             timer = setTimeout(() => {
                 setShowPopup(false);
-                navigate('/project-info');
             }, 2000);
         }
         return () => clearTimeout(timer);
@@ -224,7 +225,7 @@ const NewProject = () => {
                         <div className="bg-white w-1/3 h-1/3 rounded-md flex flex-col justify-center items-center p-1">
                             <p className="text-2xl p-5">Project is created!</p>
 
-                            <CheckSquareFilled  style={{ color: '#8fbc8f', fontSize: '50px' }} />
+                            <CheckSquareFilled style={{color: '#8fbc8f', fontSize: '50px'}}/>
 
                         </div>
                     </div>

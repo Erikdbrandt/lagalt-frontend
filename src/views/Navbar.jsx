@@ -4,10 +4,12 @@ import keycloak from "../keycloak";
 import { useEffect, useState } from "react";
 import { loginUser, updateUser } from "../api/userService";
 import PopUp from "../components/PopUps/PopUp";
+import {useNavigate} from 'react-router-dom';
 
 const Navbar = () => {
     const { user, handleLogin, handleLogout, handleUpdateUser } = useUser();
     const [showPopup, setShowPopup] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log(user)
@@ -53,6 +55,7 @@ const Navbar = () => {
     const handleLogoutClick = async () => {
         try {
             handleLogout();
+            navigate('/');
             await keycloak.logout();
 
         } catch (error) {
