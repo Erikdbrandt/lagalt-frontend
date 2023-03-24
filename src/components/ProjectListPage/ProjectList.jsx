@@ -49,6 +49,9 @@ const ProjectList = () => {
 
     return (
         <div>
+            <div>
+                <input type="search" placeholder="Search for a project"/>
+            </div>
         <div className="py-5">
             <label htmlFor="project-type-filter">Filter by project type:</label>
             <select id="project-type-filter" value={filterType} onChange={handleFilterChange}>
