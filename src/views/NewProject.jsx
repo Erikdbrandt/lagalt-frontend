@@ -12,23 +12,27 @@ import {
 } from 'antd';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-import { useUser } from "../components/context/UserContext";
+import {useUser} from "../components/context/UserContext";
 
 const {TextArea} = Input;
-;
+
 const NewProject = () => {
-    const { user, handleUpdateUser } = useUser();
     const [componentDisabled, setComponentDisabled] = useState(true);
     const [skill, setSkill] = useState([]);
     const [form] = Form.useForm();
     const [showCreateSkillForm, setShowCreateSkillForm] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedSkills, setSelectedSkills] = useState([]);
+    const {user} = useUser();
 
     const handleCreateSkill = async (values) => {
+
         try {
             const response = await axios.post('http://localhost:8080/api/v1/skill/create', values);
-            const newSkill = { name: values.name, skill_id: response.data.skill_id };
+            const newSkill = {
+                name: values.name,
+                skill_id: response.data.skill_id,
+            };
             console.log(response.data);
             form.resetFields();
             setSkill([...skill, newSkill]);
@@ -39,7 +43,7 @@ const NewProject = () => {
     };
 
     useEffect(() => {
-        async function fetchSkillNames() {
+        async function fetchSkill() {
             try {
                 const response = await axios.get('http://localhost:8080/api/v1/skill');
                 const skill = response.data;
@@ -49,13 +53,14 @@ const NewProject = () => {
             }
         }
 
-        fetchSkillNames();
+        fetchSkill();
     }, []);
     const handleSubmit = async (values) => {
 
         try {
-            const formData = { ...values, skills: selectedSkills };
-            console.log(values)
+            console.log(user)
+            const formData = {...values, skills: selectedSkills, owner: user.user_id};
+            console.log(formData)
             const response = await axios.post('http://localhost:8080/api/v1/project/create', formData);
             console.log(response.data);
             form.resetFields();
@@ -208,4 +213,3 @@ const NewProject = () => {
     );
 };
 export default () => <NewProject/>;
-
