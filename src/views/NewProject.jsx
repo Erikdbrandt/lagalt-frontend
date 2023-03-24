@@ -12,10 +12,12 @@ import {
 } from 'antd';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
+import { useUser } from "../components/context/UserContext";
 
 const {TextArea} = Input;
 ;
 const NewProject = () => {
+    const { user, handleUpdateUser } = useUser();
     const [componentDisabled, setComponentDisabled] = useState(true);
     const [skill, setSkill] = useState([]);
     const [form] = Form.useForm();
