@@ -1,6 +1,5 @@
 import ProjectCard from "./ProjectCard";
 import {useState, useEffect} from 'react';
-import axios from 'axios';
 import keycloak from "../../keycloak";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
@@ -16,11 +15,6 @@ const ProjectList = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/v1/project', {
-                    // headers: {
-                    //     Authorization: `Bearer ${keycloak.token}`
-                    // }
-                });
 
                 const projects = await getAllProjects()
 
