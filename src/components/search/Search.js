@@ -1,0 +1,47 @@
+import { useState } from "react";
+import ProjectCard from "../ProjectListPage/ProjectCard";
+
+const Search = ({ projects }) => {
+    const [searchField, setSearchField] = useState("");
+    const [filteredProjects, setFilteredProjects] = useState([]);
+
+    const handleChange = (e) => {
+        setSearchField(e.target.value);
+        setFilteredProjects(
+            projects.filter((project) =>
+                project.title.toLowerCase().includes(e.target.value.toLowerCase())
+            )
+        );
+    };
+
+    const handleClear = () => {
+        setSearchField("");
+        setFilteredProjects([]);
+    };
+
+    return (
+        <section>
+            <div className="flex items-center">
+                <input
+                    type="search"
+                    placeholder="Search for a project"
+                    value={searchField}
+                    onChange={handleChange}
+                    className="px-3 py-2 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition-colors duration-300"
+                />
+                {searchField && (
+                    <button className="ml-2" onClick={handleClear}>
+                        Clear
+                    </button>
+                )}
+            </div>
+            <div>
+                {filteredProjects.map((project) => (
+                    <ProjectCard key={project.id} project={project} />
+                ))}
+            </div>
+        </section>
+    );
+};
+
+export default Search;
