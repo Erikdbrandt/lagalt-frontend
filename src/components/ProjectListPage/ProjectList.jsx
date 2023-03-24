@@ -5,13 +5,13 @@ import keycloak from "../../keycloak";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Link} from "react-router-dom";
+import Search from "../search/Search";
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [filterType, setFilterType] = useState('');
-
-    // Fetch projects from the backend
+// Fetch projects from the backend
     useEffect(() => {
         const fetchProjects = async () => {
             try {
@@ -49,9 +49,7 @@ const ProjectList = () => {
 
     return (
         <div>
-            <div>
-                <input type="search" placeholder="Search for a project"/>
-            </div>
+            <Search projects={projects} setFilteredProjects={setFilteredProjects}/>
         <div className="py-5">
             <label htmlFor="project-type-filter">Filter by project type:</label>
             <select id="project-type-filter" value={filterType} onChange={handleFilterChange}>
