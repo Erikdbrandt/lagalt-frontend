@@ -9,22 +9,33 @@ const ProjectCard = ({ project, allUsers }) => {
 
     useEffect(() => {
         const projectSkills = project.skills;
-
         const participantIds = project.participants;
-
         const participants = allUsers.filter((participantUser) => participantIds.includes(participantUser.user_id));
 
-        participants.map((participant) => console.log(participant.name));
+        console.log(participants)
+        console.log(projectSkills)
+
+        console.log("Participants:", participants);
+        console.log("Number of participants:", participants.length);
+        console.log("Project skills:", projectSkills);
+        console.log("Number of project skills:", projectSkills.length);
 
         const neededSkills = projectSkills.filter((skill) => {
-            return participants.every((participant) => {
-                return participant.skills.some((participantSkill) => participantSkill.skill_id === skill.skill_id);
-            }) === false;
-        });
+            const found = participants.some((participant) => {
+                const hasSkill = participant.skills.some((participantSkill) => {
+                    console.log(participantSkill, "   ", skill);
+                    return participantSkill === skill;
+                });
+                console.log(`Participant ${participant.user_id} ${hasSkill ? 'has' : 'does not have'} skill ${skill}`);
+                return hasSkill;
+            });
 
-        console.log(neededSkills);
+        });
+        console.log("Missing skills:", neededSkills);
+
 
     }, [allUsers, project, user]);
+
 
 
     return (
