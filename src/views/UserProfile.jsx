@@ -1,32 +1,45 @@
-import React, { useState, useEffect } from "react";
-import { useUser } from "../components/context/UserContext";
-import { updateSkillsInUser, updateUser } from "../api/userService";
+import React, {useState, useEffect} from "react";
+import {useUser} from "../components/context/UserContext";
+import {updateSkillsInUser, updateUser} from "../api/userService";
 import SkillPopup from "../components/PopUps/SkillPopup";
-import { getAllSkills } from "../api/skills";
+import {getAllSkills} from "../api/skills";
+import {getAllProjects, getAllProjectsFromAUser} from "../api/projects";
 
 
 const UserProfile = () => {
-    const { user, handleUpdateUser } = useUser();
+    const {user, handleUpdateUser} = useUser();
     const [visibility, setVisibility] = useState(user.userVisibility);
     const [showPopup, setShowPopup] = useState(false);
     const [updatedSkills, setUpdatedSkills] = useState(user.skills || []);
+    const [showMyProjects, setShowMyProjects] = useState(user.projects || [])
 
     useEffect(() => {
-        async function fetchSkills() {
-            const [error, skills] = await getAllSkills();
-
+        async function fetchUserProjects() {
+            const [error, projects] = await getAllProjectsFromAUser(user.user_id);
             if (error) {
                 console.log(error);
                 return;
             }
+            setShowMyProjects(projects);
+        }
 
+        fetchUserProjects();
+    }, [user.user_id]);
+
+
+
+    useEffect(() => {
+        async function fetchSkills() {
+            const [error, skills] = await getAllSkills();
+            if (error) {
+                console.log(error);
+                return;
+            }
             if (user.skills) {
                 setUpdatedSkills(skills.filter(skill => user.skills.includes(skill.skill_id)));
             }
         }
-
         fetchSkills();
-
         setUpdatedSkills(user.skills || []);
     }, [user.skills]);
 
@@ -84,28 +97,28 @@ const UserProfile = () => {
                 <div>
                     <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
 
-                    <p className="text-gray-700 mb-2">
-                        <span className="font-bold">Name:</span> {user.full_name}
-                    </p>
-                    <p className="text-gray-700 mb-2">
-                        <span className="font-bold">Username:</span> {user.email}
-                    </p>
-                    <p className="text-gray-700 mb-4">
-                        <span className="font-bold">Visibility:</span>{" "}
-                        {user.userVisibility === "REGULAR" ? "Visible" : "Hidden"}{" "}
+                        <p className="text-gray-700 mb-2">
+                            <span className="font-bold">Name:</span> {user.full_name}
+                        </p>
+                        <p className="text-gray-700 mb-2">
+                            <span className="font-bold">Username:</span> {user.email}
+                        </p>
+                        <p className="text-gray-700 mb-4">
+                            <span className="font-bold">Visibility:</span>{" "}
+                            {user.userVisibility === "REGULAR" ? "Visible" : "Hidden"}{" "}
+                            <button
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4"
+                                onClick={toggleVisibility}
+                            >
+                                {user.userVisibility === "REGULAR" ? "Hide" : "Show"}
+                            </button>
+                        </p>
                         <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4"
-                            onClick={toggleVisibility}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={togglePopup}
                         >
-                            {user.userVisibility === "REGULAR" ? "Hide" : "Show"}
+                            Edit Skills
                         </button>
-                    </p>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={togglePopup}
-                    >
-                        Edit Skills
-                    </button>
                     </div>
 
                     {updatedSkills.length > 0 && (
@@ -124,10 +137,32 @@ const UserProfile = () => {
                         </div>
                     )}
                     {showPopup && (
-                        <SkillPopup onSaveSkills={handleSaveSkills} onCancel={handleCancelSkills} />
+                        <SkillPopup onSaveSkills={handleSaveSkills} onCancel={handleCancelSkills}/>
                     )}
                 </div>
             )}
+
+            <div>
+                <h2>Show my projects</h2>
+                {showMyProjects && showMyProjects.length > 0 ? (
+                    <div>
+                        <h4 className="text-lg font-medium my-4">Projects</h4>
+                        <ul className="grid grid-cols-3 gap-4">
+                            {showMyProjects.map(project => (
+                                <li key={project.project_id}>
+                                    <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
+                                        <h5 className="text-lg font-medium mb-2">{project.name}</h5>
+                                        <p className="text-gray-700">{project.description}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ) : (
+                    <p>No projects to show</p>
+                )}
+
+            </div>
         </div>
     );
 };
