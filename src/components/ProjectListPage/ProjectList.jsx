@@ -7,10 +7,12 @@ import {Link} from "react-router-dom";
 import Search from "../search/Search";
 import {getAllProjects} from "../../api/projects"
 import {getAllUsers} from "../../api/userService"
+import {getAllSkills} from "../../api/skills"
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
     const [allUsers, setUsers] = useState([]);
+    const [allSkills, setSkills] = useState([])
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [filterType, setFilterType] = useState('');
 
@@ -36,6 +38,17 @@ const ProjectList = () => {
             }
         }
 
+        const fetchAllSkills = async () => {
+            try {
+                const [error, skills] = await getAllSkills()
+                setSkills(skills)
+
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        fetchAllSkills()
         fetchAllUsers();
 
         fetchProjects();
@@ -63,18 +76,18 @@ const ProjectList = () => {
     return (
         <div>
             <Search projects={projects} setFilteredProjects={setFilteredProjects}/>
-        <div className="py-5">
-            <label htmlFor="project-type-filter">Filter by project type:</label>
-            <select id="project-type-filter" value={filterType} onChange={handleFilterChange}>
-                <option value="">All</option>
-                {projectTypes.map(projectType => (
-                    <option key={projectType} value={projectType}>{projectType}</option>
-                ))}
-            </select>
-        </div>
+            <div className="py-5">
+                <label htmlFor="project-type-filter">Filter by project type:</label>
+                <select id="project-type-filter" value={filterType} onChange={handleFilterChange}>
+                    <option value="">All</option>
+                    {projectTypes.map(projectType => (
+                        <option key={projectType} value={projectType}>{projectType}</option>
+                    ))}
+                </select>
+            </div>
 
             {filteredProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} allUsers={allUsers} />
+                <ProjectCard key={project.id} project={project} allUsers={allUsers} allSkills={allSkills}/>
             ))}
             {keycloak.authenticated && (
                 <div className="mt-5 flex items-center justify-center ">
