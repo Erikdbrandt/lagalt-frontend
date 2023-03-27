@@ -3,7 +3,7 @@ import {useUser} from "../components/context/UserContext";
 import {updateSkillsInUser, updateUser} from "../api/userService";
 import SkillPopup from "../components/PopUps/SkillPopup";
 import {getAllSkills} from "../api/skills";
-import {getAllProjects, getAllProjectsFromAUser} from "../api/projects";
+import {getAllProjectsFromAUser, getAllProjectsFromAUserParticipant} from "../api/projects";
 
 
 const UserProfile = () => {
@@ -12,6 +12,7 @@ const UserProfile = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [updatedSkills, setUpdatedSkills] = useState(user.skills || []);
     const [showMyProjects, setShowMyProjects] = useState(user.projects || [])
+    const [showProjectThatIPatricipated, setShowProjectThatIPatricipated] = useState(user.projects || [])
 
     useEffect(() => {
         async function fetchUserProjects() {
@@ -26,6 +27,22 @@ const UserProfile = () => {
         }
 
         fetchUserProjects();
+    }, [user.user_id]);
+
+
+    useEffect(() => {
+        async function fetchProjectsThatUserParticipant() {
+            const [error, projects] = await getAllProjectsFromAUserParticipant(user.user_id);
+            if (error) {
+                console.log(error);
+                return;
+            }
+            // console.log(projects)
+            setShowProjectThatIPatricipated(projects);
+
+        }
+
+        fetchProjectsThatUserParticipant();
     }, [user.user_id]);
 
     useEffect(() => {
@@ -141,6 +158,27 @@ const UserProfile = () => {
                         <h4 className="text-lg font-medium my-4">Own Projects</h4>
                         <ul className="grid grid-cols-3 gap-4">
                             {showMyProjects.map(project => (
+                                <li key={project.project_id}>
+                                    <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
+                                        <h5 className="text-lg font-medium mb-2">{project.title}</h5>
+                                        <p className="text-gray-700">{project.description}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ) : (
+                    <p>No projects to show</p>
+                )}
+
+            </div>
+
+            <div>
+                {showProjectThatIPatricipated && showProjectThatIPatricipated.length > 0 ? (
+                    <div>
+                        <h4 className="text-lg font-medium my-4">Projects that I Participated</h4>
+                        <ul className="grid grid-cols-3 gap-4">
+                            {showProjectThatIPatricipated.map(project => (
                                 <li key={project.project_id}>
                                     <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
                                         <h5 className="text-lg font-medium mb-2">{project.title}</h5>
