@@ -5,9 +5,9 @@ export async function getAllSkills() {
         const response = await axios.get(
             `http://localhost:8080/api/v1/skill`,
             {
-                headers: {
+                /*headers: {
                     Authorization: `Bearer ${keycloak.token}`,
-                },
+                },*/
             }
         );
 

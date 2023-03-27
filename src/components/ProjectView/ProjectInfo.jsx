@@ -36,12 +36,13 @@ const ProjectInfo = () => {
 
     const getUsersByIds = async (userIds) => {
         try {
+            console.log("Hej")
             const response = await axios.get(
                 `http://localhost:8080/api/v1/user?id=${userIds}`,
                 {
-                    headers: {
+               /*     headers: {
                         Authorization: `Bearer ${keycloak.token}`,
-                    },
+                    },*/
                 }
             );
 

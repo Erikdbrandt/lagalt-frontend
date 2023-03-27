@@ -112,7 +112,7 @@ export const updateUser = async (userId, userData) => {
 
         console.log(updatedUserData)
 
-        console.log("we are here ")
+
         const response = await axios.put(
             `http://localhost:8080/api/v1/user/update/${userId}`,
             updatedUserData,
@@ -146,14 +146,16 @@ export const updateUser = async (userId, userData) => {
 
 export const getAllUsers = async () => {
     try {
+
         const response = await axios.get(
             `http://localhost:8080/api/v1/user`,
             {
-                headers: {
+           /*     headers: {
                     Authorization: `Bearer ${keycloak.token}`,
-                },
+                },*/
             }
         );
+
 
         return response.data;
     }catch (error) {

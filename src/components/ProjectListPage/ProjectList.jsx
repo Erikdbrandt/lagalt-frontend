@@ -26,6 +26,7 @@ const ProjectList = () => {
                 const users = await getAllUsers();
                 const [error, skills] = await getAllSkills();
 
+
                 setProjects(projects);
                 setUsers(users);
                 setSkills(skills);
@@ -40,6 +41,9 @@ const ProjectList = () => {
 
     // Filter projects by project type
     useEffect(() => {
+
+
+
         // If no filter is selected, show all projects
         if (filterType === '') {
             setFilteredProjects(projects);
