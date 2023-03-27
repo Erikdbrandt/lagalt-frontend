@@ -138,7 +138,7 @@ const UserProfile = () => {
             <div>
                 {showMyProjects && showMyProjects.length > 0 ? (
                     <div>
-                        <h4 className="text-lg font-medium my-4">Projects</h4>
+                        <h4 className="text-lg font-medium my-4">Own Projects</h4>
                         <ul className="grid grid-cols-3 gap-4">
                             {showMyProjects.map(project => (
                                 <li key={project.project_id}>
