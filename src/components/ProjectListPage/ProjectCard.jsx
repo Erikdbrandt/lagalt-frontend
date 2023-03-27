@@ -1,10 +1,11 @@
 import {Link} from "react-router-dom";
 import {useUser} from "../context/UserContext";
 import {useEffect, useState} from "react";
+import keycloak from "../../keycloak"
 
 const ProjectCard = ({project, allUsers, allSkills}) => {
     const {user} = useUser();
-    const [missingSkills, setMissingSkills] = useState([]);
+   // const [missingSkills, setMissingSkills] = useState([]);
     const [yourSkillsInDemand, setYourSkillsInDemand] = useState([]);
     const [isParticipant, setIsParticipant] = useState(false);
     const [projectOwnerName, setProjectOwnerName] = useState('');
@@ -14,7 +15,8 @@ const ProjectCard = ({project, allUsers, allSkills}) => {
 
         setProjectOwnerName(allUsers.find((appUser) => appUser.user_id === project.owner)?.full_name);
 
-        if (user) {
+        if (user && keycloak.authenticated) {
+            console.log("we are making the check!")
             const projectSkills = project.skills;
             const participantIds = project.participants;
             const participants = allUsers.filter((participantUser) => participantIds.includes(participantUser.user_id));
@@ -30,22 +32,30 @@ const ProjectCard = ({project, allUsers, allSkills}) => {
                 return !found;
             })
 
-            setMissingSkills(skillsMissing)
+          //  setMissingSkills(skillsMissing)
 
-            const userSkills = user.skills;
+            if(user.skills !== null) {
+                const userSkills = user.skills;
 
-            const matchingUserSkills = userSkills.filter((skill) => {
-                return skillsMissing.some((missingSkill) => {
-                    return missingSkill === skill;
+                const matchingUserSkills = userSkills.filter((skill) => {
+                    return skillsMissing.some((missingSkill) => {
+                        return missingSkill === skill;
+                    });
                 });
-            });
 
-            const skillObjects = allSkills.filter((skill) => matchingUserSkills.includes(skill.skill_id))
+                const skillObjects = allSkills.filter((skill) => matchingUserSkills.includes(skill.skill_id))
 
 
-            if (skillObjects.length > 0) {
-                setYourSkillsInDemand(skillObjects)
+                if (skillObjects.length > 0) {
+                    setYourSkillsInDemand(skillObjects)
+                    console.log("your skill in demand")
+                }else {
+                    setYourSkillsInDemand([])
+                }
+
             }
+
+
 
             const isParticipant = project.participants.includes(user.user_id);
 
@@ -54,16 +64,16 @@ const ProjectCard = ({project, allUsers, allSkills}) => {
         }
 
 
-    }, [user]);
+    }, [user,project,allUsers,allSkills]);
 
 
     return (
-        <div className={`m-3.5 bg-white rounded-lg shadow-md overflow-hidden ${yourSkillsInDemand.length > 0 ? 'ring-2 ring-blue-500' : ''}`}>
+        <div className={` bg-white rounded-lg shadow-md overflow-hidden ${yourSkillsInDemand.length > 0 ? 'ring-2 ring-blue-500' : ''}`}>
             {isParticipant && (
                 projectOwnerName !== user.full_name ?
                 <div className="bg-blue-500 text-white px-2 py-1">You are a participant in this project</div>
                     :
-                    <div className="bg-blue-500 text-white px-2 py-1">You are the owner of this project</div>
+                    <div className="bg-green-600 text-white px-2 py-1">You are the owner of this project</div>
             )}
             <div className="flex items-center">
                 <div className="p-4">
