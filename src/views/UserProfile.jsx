@@ -20,13 +20,13 @@ const UserProfile = () => {
                 console.log(error);
                 return;
             }
+            // console.log(projects)
             setShowMyProjects(projects);
+
         }
 
         fetchUserProjects();
     }, [user.user_id]);
-
-
 
     useEffect(() => {
         async function fetchSkills() {
@@ -42,7 +42,6 @@ const UserProfile = () => {
         fetchSkills();
         setUpdatedSkills(user.skills || []);
     }, [user.skills]);
-
     const toggleVisibility = async () => {
         const updatedVisibility = visibility === "REGULAR" ? "HIDDEN" : "REGULAR";
 
@@ -58,11 +57,9 @@ const UserProfile = () => {
         handleUpdateUser(updatedUser);
         setVisibility(updatedVisibility);
     };
-
     const togglePopup = () => {
         setShowPopup(!showPopup);
     };
-
     const handleSaveSkills = async selectedSkills => {
         // Create a new array of skill IDs
         const skillIds = selectedSkills.map(skill => skill.skill_id);
@@ -83,15 +80,12 @@ const UserProfile = () => {
 
         togglePopup();
     };
-
     const handleCancelSkills = () => {
         togglePopup();
     };
 
     return (
         <div className="mx-8 ">
-
-
             <h1 className="text-3xl font-bold my-8">Profile Page</h1>
             {user && (
                 <div>
@@ -141,9 +135,7 @@ const UserProfile = () => {
                     )}
                 </div>
             )}
-
             <div>
-                <h2>Show my projects</h2>
                 {showMyProjects && showMyProjects.length > 0 ? (
                     <div>
                         <h4 className="text-lg font-medium my-4">Projects</h4>
@@ -151,7 +143,7 @@ const UserProfile = () => {
                             {showMyProjects.map(project => (
                                 <li key={project.project_id}>
                                     <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
-                                        <h5 className="text-lg font-medium mb-2">{project.name}</h5>
+                                        <h5 className="text-lg font-medium mb-2">{project.title}</h5>
                                         <p className="text-gray-700">{project.description}</p>
                                     </div>
                                 </li>
