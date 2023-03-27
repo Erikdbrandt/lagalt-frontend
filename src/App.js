@@ -8,7 +8,6 @@ import StartPage from "./views/StartPage";
 import KeycloakRoute from "./routes/KeycloakRoute";
 import NewProject from "./views/NewProject";
 import ProjectInfo from "./components/ProjectView/ProjectInfo";
-
 function App() {
     return (
         <BrowserRouter>

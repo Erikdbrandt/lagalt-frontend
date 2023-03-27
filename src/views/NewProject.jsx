@@ -7,7 +7,8 @@ import {
     Radio,
     Switch,
     Upload,
-    Space
+    Space,
+    Select
 } from 'antd';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
@@ -213,8 +214,13 @@ const NewProject = () => {
                 </Form.Item>
                 <Form.Item label={
                     <span className="text">Status</span>
-                } valuePropName="checked">
-                    <Switch/>
+                } name="project_status">
+                    <Select>
+                        <Select.Option value="FOUNDING">FOUNDING</Select.Option>
+                        <Select.Option value="IN_PROGRESS">IN_PROGRESS</Select.Option>
+                        <Select.Option value="STALLED">STALLED</Select.Option>
+                        <Select.Option value="COMPLETED">COMPLETED</Select.Option>
+                    </Select>
                 </Form.Item>
                 <Form.Item label={
                     <span className="text">Upload</span>

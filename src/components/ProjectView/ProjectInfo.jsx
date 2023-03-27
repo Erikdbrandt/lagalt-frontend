@@ -1,11 +1,12 @@
 import {Link, useParams} from "react-router-dom"
 import React, {useEffect, useState} from "react"
 import keycloak from "../../keycloak";
-import {Badge, Descriptions} from 'antd';
+import {Badge, Descriptions, Form, Select} from 'antd';
 import {CheckSquareFilled} from '@ant-design/icons';
 import {useUser} from "../context/UserContext";
 import {getUsersByIds} from "../../api/userService";
 import '../../index.css';
+
 const ProjectInfo = () => {
     const {id} = useParams(); // extract project ID from URL path
     const [project, setProject] = useState(null);
@@ -14,6 +15,7 @@ const ProjectInfo = () => {
     const [participants, setParticipants] = useState([]);
     const [ownerName, setOwnerName] = useState("");
     const [joined, setJoined] = useState(false);
+    const [isActive, setIsActive] = useState(true);
     const {user} = useUser();
 
     useEffect(() => {
@@ -89,12 +91,22 @@ const ProjectInfo = () => {
         }
     };
 
+    function handleClick() {
+        // Perform some action when the button is clicked
+    }
+
     return (
         <div>
-            <h1 className="text-page mt-8 pl-8">Project info</h1>
+            <div>
+                {keycloak.authenticated && project && project.owner === user.user_id ? (
+                    <h1 className="text-page mt-8 pl-8">Admin page</h1>
+                ) : (
+                    <h1 className="text-page mt-8 pl-8">Project info</h1>
+                )}
+            </div>
             {project ? (
                 <div className="p-8">
-                    <Descriptions title="Project Info" layout="vertical" className="text2">
+                    <Descriptions layout="vertical">
                         <Descriptions.Item label={
                             <span className="text">Title</span>
                         }>{project.title}</Descriptions.Item>
@@ -110,9 +122,25 @@ const ProjectInfo = () => {
                         <Descriptions.Item label={
                             <span className="text">Owner</span>
                         }>{ownerName}</Descriptions.Item>
-                        <Descriptions.Item label={
-                            <span className="text">Status</span>
-                        }>{project.project_status}</Descriptions.Item>
+
+                        {keycloak.authenticated && project && project.owner === user.user_id ? (
+                            <Form.Item label={
+                                <span className="text">Status</span>
+                            } name="project_status">
+                                <Select className="w-2/3">
+                                    <Select.Option value="FOUNDING">FOUNDING</Select.Option>
+                                    <Select.Option value="IN_PROGRESS">IN_PROGRESS</Select.Option>
+                                    <Select.Option value="STALLED">STALLED</Select.Option>
+                                    <Select.Option value="COMPLETED">COMPLETED</Select.Option>
+                                </Select>
+                            </Form.Item>
+                        ) : (
+                            <Descriptions.Item label={
+                                <span className="text">Status</span>
+                            }>{project.project_status}</Descriptions.Item>
+                        )}
+
+
                         <Descriptions.Item label={
                             <span className="text">Participants</span>
                         }>
@@ -124,7 +152,7 @@ const ProjectInfo = () => {
             {participant}
           </span>
                                             {participant === ownerName ? (
-                                                <Badge />
+                                                <Badge/>
                                             ) : null}
                                         </li>
                                     ))}
@@ -145,8 +173,13 @@ const ProjectInfo = () => {
                     </Descriptions>
                     {keycloak.authenticated &&
                         (project.owner === user.user_id ?
-                                <p className="bg-green-300 text-white font-bold py-2 px-4 rounded mt-4 w-80">You are the
-                                    owner of this project</p>
+                                    <button
+                                        className={`bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4 w-804 ${isActive ? '' : 'disabled'}`}
+                                        onClick={handleClick}
+                                        disabled={!isActive}
+                                    >
+                                        Save
+                                    </button>
                                 :
                                 joined ?
                                     <button onClick={handleUnjoinClick}
