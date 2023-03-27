@@ -12,15 +12,14 @@ import ProjectInfo from "./components/ProjectView/ProjectInfo";
 function App() {
     return (
         <BrowserRouter>
+
+            <Navbar/>
             <div className="container">
-                <Navbar/>
                 <Routes>
                     <Route path="/" element={<MainPage/>}/>
-                    <Route path="/m" element={<MainPage/>}/>
-                    <Route path="/user" element={<KeycloakRoute><MainPage/></KeycloakRoute>}/>
+                    <Route path="/startpage" element={<KeycloakRoute><MainPage/></KeycloakRoute>}/>
                     <Route path="/project/:id" element={<ProjectView/>}/>
                     <Route path="/profile" element={<KeycloakRoute> <UserProfile/> </KeycloakRoute>}/>
-                    <Route path="/startpage" element={<KeycloakRoute><StartPage/></KeycloakRoute>}/>
                     <Route path="/new-project" element={<KeycloakRoute><NewProject/></KeycloakRoute>}/>
                     <Route path="/project-info" element={<KeycloakRoute><ProjectInfo/></KeycloakRoute>}/>
 
