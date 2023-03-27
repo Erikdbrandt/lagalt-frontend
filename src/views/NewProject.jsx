@@ -9,24 +9,25 @@ import {
     Upload,
     Space
 } from 'antd';
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import { useUser} from "../components/context/UserContext";
 import {useNavigate} from 'react-router-dom';
+import '../index.css';
 
 const {TextArea} = Input;
 
 const NewProject = () => {
     const [componentDisabled, setComponentDisabled] = useState(true);
-    const [skill, setSkill] = useState([]);
     const [form] = Form.useForm();
     const [showCreateSkillForm, setShowCreateSkillForm] = useState(false);
     const [selectedSkills, setSelectedSkills] = useState([]);
     const {user} = useUser();
     const [showPopup, setShowPopup] = useState(false);
     const navigate = useNavigate();
+    const [skill, setSkill] = useState([]);
 
-    const handleCreateSkill = async (values) => {
+    const createSkillInForm = async (values) => {
 
         try {
             const response = await axios.post('http://localhost:8080/api/v1/skill/create', values);
@@ -100,27 +101,31 @@ const NewProject = () => {
         setShowPopup(true);
     }
 
-
     return (
         <>
+            <h1 className="text-page my-8">Create a project</h1>
             <Checkbox className="mt-5"
                       checked={componentDisabled}
                       onChange={(e) => setComponentDisabled(e.target.checked)}
+                      className="text2 mt-3"
             >
                 Form disabled
             </Checkbox>
             <Form
-                disabled={componentDisabled}>
+                disabled={componentDisabled}
+           >
                 <Form.Item
-                    label="Skills"
+                    label={
+                        <span className="text">Skills</span>
+                    }
                     name="skills"
                     valuePropName="checked"
-                    className="mt-3"
+                    className="text2 mt-3"
                 >
                     <Checkbox.Group style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)'}}
                                     onChange={handleCheckboxChange}>
                         {skill.map((skill) => (
-                            <Checkbox key={skill.id} value={skill.name} className="mb-2">
+                            <Checkbox className="text2" key={skill.id} value={skill.name} className="mb-2">
                                 {skill.name}
                             </Checkbox>
                         ))}
@@ -131,7 +136,7 @@ const NewProject = () => {
 
             {showCreateSkillForm ? (
                 <Form
-                    onFinish={handleCreateSkill}
+                    onFinish={createSkillInForm}
                     name="wrap"
                     labelCol={{flex: '110px'}}
                     labelAlign="left"
@@ -141,11 +146,11 @@ const NewProject = () => {
                     style={{maxWidth: 600}}
                     disabled={componentDisabled}
                 >
-                    <Form.Item label="Name" name="name" rules={[{required: true}]}>
+                    <Form.Item label="Name" className="text2" name="name" rules={[{required: true}]}>
                         <Input/>
                     </Form.Item>
 
-                    <Form.Item label="Description" name="description">
+                    <Form.Item label="Description" className="text2" name="description">
                         <Input/>
                     </Form.Item>
 
@@ -161,7 +166,7 @@ const NewProject = () => {
             ) : (
                 <Space wrap className="mt-1">
 
-                    <Button type="dashed" onClick={() => setShowCreateSkillForm(true)} className="mb-5 ml-10">Add new
+                    <Button type="dashed" onClick={() => setShowCreateSkillForm(true)} className="text2 mb-5 ml-10">Add new
                         skill</Button>
                 </Space>
             )}
@@ -181,34 +186,44 @@ const NewProject = () => {
                 }}
             >
 
-                <Form.Item label="Type" name="project_type">
+                <Form.Item label={
+                    <span className="text">Type</span>
+                } name="project_type">
                     <Radio.Group>
-                        <Radio value="MOVIE"> MOVIE </Radio>
-                        <Radio value="MUSIC"> MUSIC </Radio>
-                        <Radio value="WEB DEVELOPMENT"> WEB DEVELOPMENT </Radio>
-                        <Radio value="GAME DEVELOPMENT"> GAME DEVELOPMENT </Radio>
+                        <Radio  className="text2" value="MOVIE"> MOVIE </Radio>
+                        <Radio  className="text2" value="MUSIC"> MUSIC </Radio>
+                        <Radio  className="text2" value="WEB DEVELOPMENT"> WEB DEVELOPMENT </Radio>
+                        <Radio  className="text2" value="GAME DEVELOPMENT"> GAME DEVELOPMENT </Radio>
                     </Radio.Group>
                 </Form.Item>
-                <Form.Item label="Title" name="title" rules={[{required: true, message: 'Please enter a title',},]}>
+                <Form.Item label={
+                    <span className="text">Title</span>
+                } name="title" rules={[{required: true, message: 'Please enter a title',},]}>
                     <Input/>
                 </Form.Item>
-                <Form.Item label="Theme" name="theme">
+                <Form.Item label={
+                    <span className="text">Theme</span>
+                } name="theme">
                     <Input/>
                 </Form.Item>
-                <Form.Item label="Description" name="description">
+                <Form.Item label={
+                    <span className="text">Description</span>
+                } name="description">
                     <TextArea rows={4}/>
                 </Form.Item>
-                <Form.Item label="Status" valuePropName="checked">
+                <Form.Item label={
+                    <span className="text">Status</span>
+                } valuePropName="checked">
                     <Switch/>
                 </Form.Item>
-                <Form.Item label="Upload" valuePropName="fileList">
+                <Form.Item label={
+                    <span className="text">Upload</span>
+                } valuePropName="fileList">
                     <Upload action="/upload.do" listType="picture-card">
                         <div>
                             <PlusOutlined/>
                             <div
-                                style={{
-                                    marginTop: 8,
-                                }}
+                                className="text2 mt-8"
                             >
                                 Upload
                             </div>
@@ -216,7 +231,7 @@ const NewProject = () => {
                     </Upload>
                 </Form.Item>
                 <Form.Item>
-                    <Button htmlType="submit" onClick={handleCreate}>Create</Button>
+                    <Button htmlType="submit" onClick={handleCreate} className="btn">Create</Button>
                 </Form.Item>
 
                 {showPopup ? (

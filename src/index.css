@@ -28,6 +28,25 @@ pre {
     padding: 0 2rem;
 }
 
+.owner-name {
+    color: red; /* or any other color you want */
+}
+
+.text-page {
+    @apply text-3xl font-bold;
+}
+.text {
+    @apply text-base font-bold text-gray-800;
+}.
+
+ text2 {
+    @apply text-base text-gray-600;
+}
+
+ .btn {
+     @apply bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded;
+ }
+
 /*nav {*/
 /*    background-color: #333333;*/
 /*    color: white;*/

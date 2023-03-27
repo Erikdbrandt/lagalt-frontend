@@ -1,18 +1,17 @@
 import {Link, useParams} from "react-router-dom"
-import {useEffect, useState} from "react"
+import React, {useEffect, useState} from "react"
 import keycloak from "../../keycloak";
 import {Badge, Descriptions} from 'antd';
-import { CheckSquareFilled } from '@ant-design/icons';
+import {CheckSquareFilled} from '@ant-design/icons';
 import {useUser} from "../context/UserContext";
-import axios from "axios";
-
+import {getUsersByIds} from "../../api/userService";
+import '../../index.css';
 const ProjectInfo = () => {
     const {id} = useParams(); // extract project ID from URL path
     const [project, setProject] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [skillNames, setSkillNames] = useState([]);
     const [participants, setParticipants] = useState([]);
-    const [users, setUsers] = useState([]);
     const [ownerName, setOwnerName] = useState("");
     const [joined, setJoined] = useState(false);
     const {user} = useUser();
@@ -25,35 +24,21 @@ const ProjectInfo = () => {
                 setProject(data);
                 // Extract participantsIds from the fetched project data
                 const participantsIds = data && data.participants ? data.participants : [];
+                const ownerId = data && data.owner ? data.owner : "";
                 // Call the getUsersByIds function to get the participants' names
-                getUsersByIds(participantsIds)
-                    .then((participantNames) => setParticipants(participantNames))
+                getUsersByIds([...participantsIds, ownerId])
+                    .then((participantNames) => {
+                        setParticipants(participantNames);
+                        // Check if the logged-in user is already a participant
+                        if (keycloak.authenticated && participantsIds.includes(user.user_id)) {
+                            setJoined(true);
+                        }
+                    })
                     .catch((error) => console.error(error));
             })
             .catch((error) => console.error(error));
+    }, [id, keycloak, getUsersByIds]);
 
-    }, [id]);
-
-    const getUsersByIds = async (userIds) => {
-        try {
-            const response = await axios.get(
-                `http://localhost:8080/api/v1/user?id=${userIds}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${keycloak.token}`,
-                    },
-                }
-            );
-
-            const users = response.data;
-            const filteredUsers = users.filter((user) => userIds.includes(user.user_id));
-            const userNames = filteredUsers.map((user) => user.full_name);
-            return userNames;
-        } catch (error) {
-            console.error(error);
-            return [];
-        }
-    };
 
     useEffect(() => {
         fetch(`http://localhost:8080/api/v1/project/skills/${id}`)
@@ -106,18 +91,51 @@ const ProjectInfo = () => {
 
     return (
         <div>
-
+            <h1 className="text-page mt-8 pl-8">Project info</h1>
             {project ? (
-                <div className="p-8 ">
-                    <Descriptions title="Project Info" layout="vertical">
-                        <Descriptions.Item label="Title">{project.title}</Descriptions.Item>
-                        <Descriptions.Item label="Description">{project.description}</Descriptions.Item>
-                        <Descriptions.Item label="Project type">{project.project_type}</Descriptions.Item>
-                        <Descriptions.Item label="Theme">{project.theme}</Descriptions.Item>
-                        <Descriptions.Item label="Owner">{ownerName}</Descriptions.Item>
-                        <Descriptions.Item label="Status">{project.project_status}</Descriptions.Item>
-                        <Descriptions.Item label="Participants">{project && participants.length > 0 ? participants.join(', ') : 'No participants'}</Descriptions.Item>
-                        <Descriptions.Item label="Skills">
+                <div className="p-8">
+                    <Descriptions title="Project Info" layout="vertical" className="text2">
+                        <Descriptions.Item label={
+                            <span className="text">Title</span>
+                        }>{project.title}</Descriptions.Item>
+                        <Descriptions.Item label={
+                            <span className="text">Description</span>
+                        }>{project.description}</Descriptions.Item>
+                        <Descriptions.Item label={
+                            <span className="text">Project type</span>
+                        }>{project.project_type}</Descriptions.Item>
+                        <Descriptions.Item label={
+                            <span className="text">Theme</span>
+                        }>{project.theme}</Descriptions.Item>
+                        <Descriptions.Item label={
+                            <span className="text">Owner</span>
+                        }>{ownerName}</Descriptions.Item>
+                        <Descriptions.Item label={
+                            <span className="text">Status</span>
+                        }>{project.project_status}</Descriptions.Item>
+                        <Descriptions.Item label={
+                            <span className="text">Participants</span>
+                        }>
+                            {project && participants.length > 0 ? (
+                                <ul>
+                                    {participants.map((participant) => (
+                                        <li key={participant}>
+          <span className={participant === ownerName ? "owner-name" : ""}>
+            {participant}
+          </span>
+                                            {participant === ownerName ? (
+                                                <Badge />
+                                            ) : null}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                "No participants"
+                            )}
+                        </Descriptions.Item>
+                        <Descriptions.Item label={
+                            <span className="text">Skills</span>
+                        }>
                             <ul>
                                 {skillNames.map(skillName =>
                                     <li key={skillName}>{skillName}</li>
@@ -127,10 +145,12 @@ const ProjectInfo = () => {
                     </Descriptions>
                     {keycloak.authenticated &&
                         (project.owner === user.user_id ?
-                                <p className="bg-green-300 text-white font-bold py-2 px-4 rounded mt-4 w-80">You are the owner of this project</p>
+                                <p className="bg-green-300 text-white font-bold py-2 px-4 rounded mt-4 w-80">You are the
+                                    owner of this project</p>
                                 :
                                 joined ?
-                                    <button onClick={handleUnjoinClick} className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
+                                    <button onClick={handleUnjoinClick}
+                                            className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
                                         Unjoin
                                     </button>
                                     :
@@ -146,11 +166,11 @@ const ProjectInfo = () => {
             {showPopup ? (
                 <div
                     className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center p-5"
-                    onClick={handleOverlayClick} >
+                    onClick={handleOverlayClick}>
                     <div className="bg-white w-1/3 h-1/3 rounded-md flex flex-col justify-center items-center p-1">
                         <p className="text-2xl p-5">{joined ? 'Welcome to the project!' : 'You have unjoined the project!'}</p>
 
-                        <CheckSquareFilled  style={{ color: '#8fbc8f', fontSize: '50px' }} />
+                        <CheckSquareFilled style={{color: '#8fbc8f', fontSize: '50px'}}/>
 
                     </div>
                 </div>
