@@ -4,6 +4,9 @@ import {updateSkillsInUser, updateUser} from "../api/userService";
 import SkillPopup from "../components/PopUps/SkillPopup";
 import {getAllSkills} from "../api/skills";
 import {getAllProjectsFromAUser, getAllProjectsFromAUserParticipant} from "../api/projects";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCode } from '@fortawesome/free-solid-svg-icons'
+
 
 
 const UserProfile = () => {
@@ -103,9 +106,10 @@ const UserProfile = () => {
 
     return (
         <div className="mx-8 ">
+            <img src="/profile.png" alt="Profile Picture" className="w-24 h-24 rounded-full object-cover mx-auto my-8" />
             <h1 className="text-3xl font-bold my-8">Profile Page</h1>
             {user && (
-                <div>
+                <div className="py-5">
                     <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
 
                         <p className="text-gray-700 mb-2">
@@ -133,26 +137,28 @@ const UserProfile = () => {
                     </div>
 
                     {updatedSkills.length > 0 && (
-                        <div>
+                        <div className="transition duration-500 ease-in-out backdrop-opacity-5 transform scale-90 hover:opacity-100 hover:scale-100">
                             <h4 className="text-lg font-medium my-4">Skills</h4>
-                            <ul className="grid grid-cols-3 gap-4">
+                            <div className="flex flex-wrap">
                                 {updatedSkills.map(skill => (
-                                    <li key={skill.skill_id}>
-                                        <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
-                                            <h5 className="text-lg font-medium mb-2">{skill.name}</h5>
-                                            <p className="text-gray-700">{skill.description}</p>
-                                        </div>
-                                    </li>
+                                    <div key={skill.skill_id} className="flex-grow-0 p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500 w-1/3">
+                                        <h5 className="text-lg font-medium mb-2">
+                                            <FontAwesomeIcon icon={faCode} className="mr-2" />
+                                            {skill.name}
+                                        </h5>
+                                        <p className="text-gray-700">{skill.description}</p>
+                                    </div>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
                     )}
+
                     {showPopup && (
                         <SkillPopup onSaveSkills={handleSaveSkills} onCancel={handleCancelSkills}/>
                     )}
                 </div>
             )}
-            <div>
+            <div className="py-5">
                 {showMyProjects && showMyProjects.length > 0 ? (
                     <div>
                         <h4 className="text-lg font-medium my-4">Own Projects</h4>
@@ -173,7 +179,7 @@ const UserProfile = () => {
 
             </div>
 
-            <div>
+            <div className="py-5">
                 {showProjectThatIPatricipated && showProjectThatIPatricipated.length > 0 ? (
                     <div>
                         <h4 className="text-lg font-medium my-4">Projects that I Participated</h4>
