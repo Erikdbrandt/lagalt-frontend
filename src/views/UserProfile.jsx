@@ -168,7 +168,7 @@ const UserProfile = () => {
                         </ul>
                     </div>
                 ) : (
-                    <p>No projects to show</p>
+                    <h4 className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">YOU DON'T OWN ANY PROJECT</h4>
                 )}
 
             </div>
@@ -189,7 +189,7 @@ const UserProfile = () => {
                         </ul>
                     </div>
                 ) : (
-                    <p>No projects to show</p>
+                    <h4 className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">CURRENTLY YOU DON'T PARTICIPATE ANY PROJECT</h4>
                 )}
 
             </div>
