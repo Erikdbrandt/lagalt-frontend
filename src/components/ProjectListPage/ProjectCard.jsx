@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import { useUser } from "../context/UserContext";
-import { useEffect, useState } from "react";
+import {Link} from "react-router-dom";
+import {useUser} from "../context/UserContext";
+import {useEffect, useState} from "react";
 
 const ProjectCard = ({ project, allUsers, allSkills }) => {
     const { user } = useUser();
@@ -33,16 +33,19 @@ const ProjectCard = ({ project, allUsers, allSkills }) => {
         const userSkills = user.skills;
 
         const matchingUserSkills = userSkills.filter((skill) => {
-            const found = skillsMissing.some((missingSkill) => {
+            return skillsMissing.some((missingSkill) => {
                 return missingSkill === skill;
             });
-            return found;
         });
 
         const skillObjects = allSkills.filter((skill) => matchingUserSkills.includes(skill.skill_id))
 
 
-        setYourSkillsInDemand(skillObjects)
+        if(skillObjects.length > 0) {
+            setYourSkillsInDemand(skillObjects)
+
+            console.log("bye")
+        }
 
 
         const isParticipant = project.participants.includes(user.user_id);
@@ -51,7 +54,7 @@ const ProjectCard = ({ project, allUsers, allSkills }) => {
 
         console.log("Hi")
 
-    }, [allUsers, project, user,yourSkillsInDemand]);
+    }, []);
 
 
 
