@@ -102,7 +102,7 @@ const Navbar = () => {
     };
 
     return (
-        <div className="bg-blue-500 h-14 flex items-center justify-between w-full p-2 mb-2 p-2">
+        <div className="bg-blue-500 h-14 flex items-center justify-between w-full p-2 mb-2 p-2" style={{ position: "fixed", top: 0, left: 0, right: 0 }}>
             <div className="flex items-center">
                 <Link to="/startpage">
                     <img
