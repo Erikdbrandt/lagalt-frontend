@@ -20,6 +20,27 @@ const checkForUser = async (email) => {
     }
 };
 
+export const getUsersByIds = async (userIds) => {
+    try {
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/user?id=${userIds}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${keycloak.token}`,
+                },
+            }
+        );
+
+        const users = response.data;
+        const filteredUsers = users.filter((user) => userIds.includes(user.user_id));
+        const userNames = filteredUsers.map((user) => user.full_name);
+        return userNames;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+};
+
 const createUser = async (userProfile, authorityRole) => {
     try {
         const response = await axios.post(
