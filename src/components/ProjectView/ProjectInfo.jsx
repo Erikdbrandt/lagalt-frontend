@@ -116,7 +116,7 @@ const ProjectInfo = () => {
                         <Descriptions.Item label="Theme">{project.theme}</Descriptions.Item>
                         <Descriptions.Item label="Owner">{ownerName}</Descriptions.Item>
                         <Descriptions.Item label="Status">{project.project_status}</Descriptions.Item>
-                        <Descriptions.Item label="Participants">{project && participants.length > 0 ? participants.join(', ') : 'Loading...'}</Descriptions.Item>
+                        <Descriptions.Item label="Participants">{project && participants.length > 0 ? participants.join(', ') : 'No participants'}</Descriptions.Item>
                         <Descriptions.Item label="Skills">
                             <ul>
                                 {skillNames.map(skillName =>
@@ -126,13 +126,17 @@ const ProjectInfo = () => {
                         </Descriptions.Item>
                     </Descriptions>
                     {keycloak.authenticated &&
-                        (
-                            joined ?
-                                <button onClick={handleUnjoinClick} className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
-                                    Unjoin
-                                </button> :
-                                <button onClick={handleJoinClick}
-                                        className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Join</button>)}
+                        (project.owner === user.user_id ?
+                                <p className="bg-green-300 text-white font-bold py-2 px-4 rounded mt-4 w-80">You are the owner of this project</p>
+                                :
+                                joined ?
+                                    <button onClick={handleUnjoinClick} className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
+                                        Unjoin
+                                    </button>
+                                    :
+                                    <button onClick={handleJoinClick}
+                                            className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Join</button>
+                        )}
 
                 </div>
             ) : (
