@@ -210,23 +210,7 @@ const ProjectInfo = () => {
                                     Save
                                 </Button>
                             </Form.Item>
-
-                            {showPopup ? (
-                                <div
-                                    className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center p-5">
-                                    <div
-                                        className="bg-white w-1/3 h-1/3 rounded-md flex flex-col justify-center items-center p-1">
-                                        <p className="text-2xl p-5">Project is created!</p>
-
-                                        <CheckSquareFilled style={{color: '#8fbc8f', fontSize: '50px'}}/>
-
-                                    </div>
-                                </div>
-                            ) : null}
-
                         </Form>
-                    )}
-
                     ) : (
                         joined ? (
                             <button onClick={handleUnjoinClick}
