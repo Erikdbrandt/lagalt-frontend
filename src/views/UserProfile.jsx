@@ -4,9 +4,8 @@ import {updateSkillsInUser, updateUser} from "../api/userService";
 import SkillPopup from "../components/PopUps/SkillPopup";
 import {getAllSkills} from "../api/skills";
 import {getAllProjectsFromAUser, getAllProjectsFromAUserParticipant} from "../api/projects";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCode } from '@fortawesome/free-solid-svg-icons'
-
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCode} from '@fortawesome/free-solid-svg-icons'
 
 
 const UserProfile = () => {
@@ -59,6 +58,7 @@ const UserProfile = () => {
                 setUpdatedSkills(skills.filter(skill => user.skills.includes(skill.skill_id)));
             }
         }
+
         fetchSkills();
         setUpdatedSkills(user.skills || []);
     }, [user.skills]);
@@ -106,7 +106,8 @@ const UserProfile = () => {
 
     return (
         <div className="mx-8 ">
-            <img src="/profile.png" alt="Profile Picture" className="w-24 h-24 rounded-full object-cover mx-auto my-8" />
+            <img src="/profile.png" alt="Profile Picture"
+                 className="w-24 rounded-full object-cover mx-auto my-8 mt-16"/>
             <h1 className="text-3xl font-bold my-8">Profile Page</h1>
             {user && (
                 <div className="py-5">
@@ -136,21 +137,25 @@ const UserProfile = () => {
                         </button>
                     </div>
                     {updatedSkills.length > 0 && (
-                        <div className="transition duration-500 ease-in-out backdrop-opacity-5 transform scale-90 hover:opacity-100 hover:scale-100 my-4">
+                        <div className="transition duration-300 ease-in-out transform hover:scale-105 my-4">
                             <h4 className="text-lg font-medium my-4">Skills</h4>
-                            <div className="flex flex-wrap">
+                            <ul className="grid grid-cols-3 gap-4">
                                 {updatedSkills.map(skill => (
-                                    <div key={skill.skill_id} className="flex-grow-0 p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500 w-1/3 mb-4">
-                                        <h5 className="text-lg font-medium mb-2">
-                                            <FontAwesomeIcon icon={faCode} className="mr-2" />
-                                            {skill.name}
-                                        </h5>
-                                        <p className="text-gray-700">{skill.description}</p>
-                                    </div>
+                                    <li key={skill.skill_id}
+                                        className="flex-grow-0 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
+                                        <div className="p-4">
+                                            <h5 className="text-lg font-medium mb-2">
+                                                <FontAwesomeIcon icon={faCode} className="mr-2"/>
+                                                {skill.name}
+                                            </h5>
+                                            <p className="text-gray-700">{skill.description}</p>
+                                        </div>
+                                    </li>
                                 ))}
-                            </div>
+                            </ul>
                         </div>
                     )}
+
 
                     {showPopup && (
                         <SkillPopup onSaveSkills={handleSaveSkills} onCancel={handleCancelSkills}/>
@@ -159,42 +164,49 @@ const UserProfile = () => {
             )}
             <div className="py-5">
                 {showMyProjects && showMyProjects.length > 0 ? (
-                    <div>
-                        <h4 className="text-lg font-medium my-4">Own Projects</h4>
-                        <ul className="grid grid-cols-3 gap-4">
-                            {showMyProjects.map(project => (
-                                <li key={project.project_id}>
-                                    <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
-                                        <h5 className="text-lg font-medium mb-2">{project.title}</h5>
-                                        <p className="text-gray-700">{project.description}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                    <div className="transition duration-300 ease-in-out transform hover:scale-105 my-4">
+                        <div>
+                            <h4 className="text-lg font-medium my-4">Own Projects</h4>
+                            <ul className="grid grid-cols-3 gap-4">
+                                {showMyProjects.map(project => (
+                                    <li key={project.project_id}>
+                                        <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
+                                            <h5 className="text-lg font-medium mb-2">{project.title}</h5>
+                                            <p className="text-gray-700">{project.description}</p>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 ) : (
-                    <h4 className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">YOU DON'T OWN ANY PROJECT</h4>
+                    <h4 className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">YOU DON'T OWN ANY
+                                                                                                 PROJECT</h4>
                 )}
 
             </div>
 
             <div className="py-5">
                 {showProjectThatIPatricipated && showProjectThatIPatricipated.length > 0 ? (
-                    <div>
-                        <h4 className="text-lg font-medium my-4">Projects that I Participated</h4>
-                        <ul className="grid grid-cols-3 gap-4">
-                            {showProjectThatIPatricipated.map(project => (
-                                <li key={project.project_id}>
-                                    <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
-                                        <h5 className="text-lg font-medium mb-2">{project.title}</h5>
-                                        <p className="text-gray-700">{project.description}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                    <div className="transition duration-300 ease-in-out transform hover:scale-105 my-4">
+                        <div>
+                            <h4 className="text-lg font-medium my-4">Projects that I Participated</h4>
+                            <ul className="grid grid-cols-3 gap-4">
+                                {showProjectThatIPatricipated.map(project => (
+                                    <li key={project.project_id}>
+                                        <div className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">
+                                            <h5 className="text-lg font-medium mb-2">{project.title}</h5>
+                                            <p className="text-gray-700">{project.description}</p>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 ) : (
-                    <h4 className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">CURRENTLY YOU DON'T PARTICIPATE ANY PROJECT</h4>
+                    <h4 className="p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500">CURRENTLY YOU DON'T
+                                                                                                 PARTICIPATE ANY
+                                                                                                 PROJECT</h4>
                 )}
 
             </div>

@@ -102,53 +102,60 @@ const Navbar = () => {
     };
 
     return (
-        <div className="bg-blue-500 h-14 flex items-center justify-between w-full p-2 mb-2 p-2" style={{ position: "fixed", top: 0, left: 0, right: 0 }}>
-            <div className="flex items-center">
-                <Link to="/startpage">
-                    <img
-                        className="h-14 cursor-pointer"
-                        src="https://logodownload.org/wp-content/uploads/2018/02/reddit-logo-17.png"
-                        alt="Reddit Logo"
-                    />
-                </Link>
-                <Link to="/startpage">
-                    <div className="ml-2 text-lg font-bold text-white cursor-pointer">
-                        lagalt
-                    </div>
-                </Link>
-            </div>
-            <div className="flex items-center">
-                {keycloak.authenticated && (
-                    <>
-                        <Link to="/profile">
-                            <div className="mr-4 cursor-pointer text-white font-bold">
-                                Profile
-                            </div>
-                        </Link>
-                        <Link to="/startpage">
-                            <div className="mr-4 cursor-pointer text-white font-bold">
-                                StartPage
-                            </div>
-                        </Link>
-                    </>
-                )}
-                <div>
-                    <section className="actions">
-                        {keycloak.authenticated ? (
-                            <button className="text-white font-bold" onClick={handleLogoutClick}>
-                                Logout
-                            </button>
-                        ) : (
-                            <button className="text-white font-bold" onClick={handleLoginClick}>
-                                Login
-                            </button>
-                        )}
-                    </section>
+        <div className="relative z-10">
+            <div className="fixed top-0 bg-blue-500 h-14 flex items-center justify-between w-full p-2 mb-2">
+                <div className="flex items-center">
+                    <Link to="/startpage">
+                        <img
+                            className="h-14 cursor-pointer"
+                            src="https://logodownload.org/wp-content/uploads/2018/02/reddit-logo-17.png"
+                            alt="Reddit Logo"
+                        />
+                    </Link>
+                    <Link to="/startpage">
+                        <div className="ml-2 text-lg font-bold text-white cursor-pointer">
+                            lagalt
+                        </div>
+                    </Link>
                 </div>
+                <div className="flex items-center">
+                    {keycloak.authenticated && (
+                        <>
+                            <Link to="/profile">
+                                <div className="mr-4 cursor-pointer text-white font-bold">
+                                    Profile
+                                </div>
+                            </Link>
+                            <Link to="/startpage">
+                                <div className="mr-4 cursor-pointer text-white font-bold">
+                                    StartPage
+                                </div>
+                            </Link>
+                        </>
+                    )}
+                    <div>
+                        <section className="actions">
+                            {keycloak.authenticated ? (
+                                <button
+                                    className="text-white font-bold"
+                                    onClick={handleLogoutClick}
+                                >
+                                    Logout
+                                </button>
+                            ) : (
+                                <button
+                                    className="text-white font-bold"
+                                    onClick={handleLoginClick}
+                                >
+                                    Login
+                                </button>
+                            )}
+                        </section>
+                    </div>
+                </div>
+                {showPopup && <PopUp handlePopupSubmit={handlePopupSubmit} />}
             </div>
-            {showPopup && <PopUp handlePopupSubmit={handlePopupSubmit} />}
         </div>
-
     );
 };
 

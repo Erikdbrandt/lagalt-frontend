@@ -4,7 +4,6 @@ import MainPage from "./views/MainPage";
 import ProjectView from "./views/ProjectView";
 import {Route, BrowserRouter, Routes} from "react-router-dom";
 import UserProfile from "./views/UserProfile";
-import StartPage from "./views/StartPage";
 import KeycloakRoute from "./routes/KeycloakRoute";
 import NewProject from "./views/NewProject";
 import ProjectInfo from "./components/ProjectView/ProjectInfo";
@@ -14,7 +13,7 @@ function App() {
         <BrowserRouter>
 
             <Navbar/>
-            <div className="container">
+            <div className="container mt-14">
                 <Routes>
                     <Route path="/" element={<MainPage/>}/>
                     <Route path="/startpage" element={<KeycloakRoute><MainPage/></KeycloakRoute>}/>
