@@ -79,9 +79,9 @@ const ProjectCard = ({project, allUsers, allSkills}) => {
                 <div className="p-4">
                     {yourSkillsInDemand.length > 0 ?
                         <img
-                            src="https://techcrunch.com/wp-content/uploads/2015/04/uncle-sam-we-want-you1-kopie_1.png?w=1390&crop=1"
+                            src="/we-want-you.jpg"
                             alt="Skills needed"
-                            className="w-28  rounded"
+                            className="w-36  rounded"
                         /> :
                         <img
                             src="https://cdn-icons-png.flaticon.com/512/4150/4150746.png"

@@ -2,7 +2,7 @@ import {Link, useParams} from "react-router-dom"
 import {useEffect, useState} from "react"
 import keycloak from "../../keycloak";
 import {Badge, Descriptions} from 'antd';
-import { CheckSquareFilled } from '@ant-design/icons';
+import {CheckSquareFilled} from '@ant-design/icons';
 import {useUser} from "../context/UserContext";
 import axios from "axios";
 
@@ -16,8 +16,11 @@ const ProjectInfo = () => {
     const [ownerName, setOwnerName] = useState("");
     const [joined, setJoined] = useState(false);
     const {user} = useUser();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
+        setLoading(true);
         // Fetch project data from API using the project ID
         fetch(`http://localhost:8080/api/v1/project/${id}`)
             .then((response) => response.json())
@@ -32,6 +35,7 @@ const ProjectInfo = () => {
             })
             .catch((error) => console.error(error));
 
+        setLoading(false);
     }, [id]);
 
     const getUsersByIds = async (userIds) => {
@@ -40,9 +44,9 @@ const ProjectInfo = () => {
             const response = await axios.get(
                 `http://localhost:8080/api/v1/user?id=${userIds}`,
                 {
-               /*     headers: {
-                        Authorization: `Bearer ${keycloak.token}`,
-                    },*/
+                    /*     headers: {
+                             Authorization: `Bearer ${keycloak.token}`,
+                         },*/
                 }
             );
 
@@ -57,6 +61,7 @@ const ProjectInfo = () => {
     };
 
     useEffect(() => {
+
         fetch(`http://localhost:8080/api/v1/project/skills/${id}`)
             .then((response) => response.json())
             .then((data) => setSkillNames(data))
@@ -69,6 +74,18 @@ const ProjectInfo = () => {
             .then((data) => setOwnerName(data))
             .catch((error) => console.error(error));
     }, [id]);
+
+    useEffect(() => {
+
+
+        if (loading === false) {
+            if (project.participants.includes(user.user_id)) {
+                setJoined(true);
+            }
+        }
+
+
+    }, [loading])
 
     function handleOverlayClick() {
         setShowPopup(false);
@@ -117,7 +134,8 @@ const ProjectInfo = () => {
                         <Descriptions.Item label="Theme">{project.theme}</Descriptions.Item>
                         <Descriptions.Item label="Owner">{ownerName}</Descriptions.Item>
                         <Descriptions.Item label="Status">{project.project_status}</Descriptions.Item>
-                        <Descriptions.Item label="Participants">{project && participants.length > 0 ? participants.join(', ') : 'Loading...'}</Descriptions.Item>
+                        <Descriptions.Item
+                            label="Participants">{project && participants.length > 0 ? participants.join(', ') : 'Loading...'}</Descriptions.Item>
                         <Descriptions.Item label="Skills">
                             <ul>
                                 {skillNames.map(skillName =>
@@ -129,7 +147,8 @@ const ProjectInfo = () => {
                     {keycloak.authenticated &&
                         (
                             joined ?
-                                <button onClick={handleUnjoinClick} className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
+                                <button onClick={handleUnjoinClick}
+                                        className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
                                     Unjoin
                                 </button> :
                                 <button onClick={handleJoinClick}
@@ -143,11 +162,11 @@ const ProjectInfo = () => {
             {showPopup ? (
                 <div
                     className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center p-5"
-                    onClick={handleOverlayClick} >
+                    onClick={handleOverlayClick}>
                     <div className="bg-white w-1/3 h-1/3 rounded-md flex flex-col justify-center items-center p-1">
                         <p className="text-2xl p-5">{joined ? 'Welcome to the project!' : 'You have unjoined the project!'}</p>
 
-                        <CheckSquareFilled  style={{ color: '#8fbc8f', fontSize: '50px' }} />
+                        <CheckSquareFilled style={{color: '#8fbc8f', fontSize: '50px'}}/>
 
                     </div>
                 </div>
