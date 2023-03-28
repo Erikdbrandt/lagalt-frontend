@@ -34,14 +34,16 @@ const ProjectInfo = () => {
                     .then((participantNames) => {
                         setParticipants(participantNames);
                         // Check if the logged-in user is already a participant
-                        if (keycloak.authenticated && participantsIds.includes(user.user_id)) {
-                            setJoined(true);
+                        if(!joined) {
+                            if (keycloak.authenticated && participantsIds.includes(user.user_id)) {
+                                setJoined(true);
+                            }
                         }
                     })
                     .catch((error) => console.error(error));
             })
             .catch((error) => console.error(error));
-    }, [id, keycloak, getUsersByIds]);
+    }, [id, keycloak, getUsersByIds,joined]);
 
 
     useEffect(() => {
@@ -163,9 +165,12 @@ const ProjectInfo = () => {
                                 <ul>
                                     {participants.map((participant) => (
                                         <li key={participant}>
-          <span className={participant === ownerName ? "owner-name" : ""}>
-            {participant}
-          </span>
+                             <span className={participant === ownerName ? "owner-name font-bold" : ""}>
+                                  {participant}
+                             {participant === ownerName ? (
+                                 <span className="text-gray-400 ml-1">(owner)</span>
+                             ) : null}
+                                </span>
                                             {participant === ownerName ? (
                                                 <Badge/>
                                             ) : null}
@@ -230,11 +235,13 @@ const ProjectInfo = () => {
 
                     ) : (
                         joined ? (
-                            <button onClick={handleUnjoinClick} className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
+                            <button onClick={handleUnjoinClick}
+                                    className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
                                 Unjoin
                             </button>
                         ) : (
-                            <button onClick={handleJoinClick} className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">
+                            <button onClick={handleJoinClick}
+                                    className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">
                                 Join
                             </button>
                         )
