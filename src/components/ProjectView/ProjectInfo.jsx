@@ -114,6 +114,7 @@ const ProjectInfo = () => {
     };
 
     return (
+
         <div>
             <div>
                 {keycloak.authenticated && project && project.owner === user.user_id ? (
