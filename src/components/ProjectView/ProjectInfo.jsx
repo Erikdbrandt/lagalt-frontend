@@ -16,8 +16,8 @@ const ProjectInfo = () => {
     const [participants, setParticipants] = useState([]);
     const [ownerName, setOwnerName] = useState("");
     const [joined, setJoined] = useState(false);
-    const [statusChanged, setStatusChanged] = useState(false);
-    const [notification, setNotification] = useState(null);
+    const [isDirty, setIsDirty] = useState(false);
+    const [form] = Form.useForm();
 
     const {user} = useUser();
 
@@ -26,14 +26,11 @@ const ProjectInfo = () => {
             .then((response) => response.json())
             .then((data) => {
                 setProject(data);
-                // Extract participantsIds from the fetched project data
                 const participantsIds = data && data.participants ? data.participants : [];
                 const ownerId = data && data.owner ? data.owner : "";
-                // Call the getUsersByIds function to get the participants' names
                 getUsersByIds([...participantsIds, ownerId])
                     .then((participantNames) => {
                         setParticipants(participantNames);
-                        // Check if the logged-in user is already a participant
                         if (keycloak.authenticated && participantsIds.includes(user.user_id)) {
                             setJoined(true);
                         }
@@ -57,6 +54,16 @@ const ProjectInfo = () => {
             .then((data) => setOwnerName(data))
             .catch((error) => console.error(error));
     }, [id]);
+
+    useEffect(() => {
+        let timer;
+        if (showPopup) {
+            timer = setTimeout(() => {
+                setShowPopup(false);
+            }, 2000);
+        }
+        return () => clearTimeout(timer);
+    }, [showPopup]);
 
     function handleOverlayClick() {
         setShowPopup(false);
@@ -95,31 +102,20 @@ const ProjectInfo = () => {
 
     const handleClick = async (values) => {
         try {
-            console.log("HERE")
-            // make the API call to update the project status
-            const response = await axios.patch(`http://localhost:8080/api/v1/project/update/${id}`,
-                {project_status: values.project_status});
-            // handle success case by displaying a success message to the user and updating the project status on the frontend
-            notification.success({
-                message: 'Success',
-                description: 'Project status has been updated',
-            });
-            setProject(response.data);
+            const updatedProject = {...project, project_status: values.project_status};
+            const response = await axios.patch(`http://localhost:8080/api/v1/project/update/${id}`, updatedProject);
+            console.log("The status has been changed!" + project.project_status)
+            setProject(updatedProject);
+            form.resetFields();
+            setIsDirty(false);
+            setShowPopup(true);
         } catch (error) {
-            // handle error case by displaying an error message to the user
-            notification.error({
-                message: 'Error',
-                description: 'Unable to update project status. Please try again later.',
-            });
+            console.error(error)
         }
     };
 
-    const handleStatusChange = (value) => {
-        if (value !== project.project_status) {
-            setStatusChanged(true);
-        } else {
-            setStatusChanged(false);
-        }
+    const handleSelectChange = () => {
+        setIsDirty(true);
     };
 
     return (
@@ -187,16 +183,14 @@ const ProjectInfo = () => {
                         </Descriptions.Item>
                     </Descriptions>
 
-
                     {keycloak.authenticated && project && project.owner === user.user_id ? (
-                        <Form onFinish={handleClick}>
-                            <Form.Item label={<span className="text">Status</span>} name="project_status">
-                                <Select
-                                    className="w-2/3"
-                                    defaultValue={project.project_status}
-                                    name="project_status"
-                                    onChange={handleStatusChange}
-                                >
+                        <Form form={form} onFinish={handleClick}>
+                            <Form.Item
+                                label={<span className="text">Status</span>}
+                                name="project_status"
+                                initialValue={project.project_status}
+                            >
+                                <Select className="w-2/3" onChange={handleSelectChange}>
                                     <Select.Option value="FOUNDING" className="text2">
                                         FOUNDING
                                     </Select.Option>
@@ -212,29 +206,36 @@ const ProjectInfo = () => {
                                 </Select>
                             </Form.Item>
                             <Form.Item>
-                                <Button
-                                    htmlType="submit"
-                                    className="btn ml-3"
-                                    disabled={
-                                        !statusChanged ||
-                                        project.project_status === "FOUNDING" ||
-                                        project.project_status === "IN_PROGRESS" ||
-                                        project.project_status === "STALLED" ||
-                                        project.project_status === "COMPLETED"
-                                    }
-                                >
+                                <Button htmlType="submit" className="btn" disabled={!isDirty}>
                                     Save
                                 </Button>
                             </Form.Item>
+
+                            {showPopup ? (
+                                <div
+                                    className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center p-5">
+                                    <div
+                                        className="bg-white w-1/3 h-1/3 rounded-md flex flex-col justify-center items-center p-1">
+                                        <p className="text-2xl p-5">Project is created!</p>
+
+                                        <CheckSquareFilled style={{color: '#8fbc8f', fontSize: '50px'}}/>
+
+                                    </div>
+                                </div>
+                            ) : null}
+
                         </Form>
+                    )}
 
                     ) : (
                         joined ? (
-                            <button onClick={handleUnjoinClick} className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
+                            <button onClick={handleUnjoinClick}
+                                    className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
                                 Unjoin
                             </button>
                         ) : (
-                            <button onClick={handleJoinClick} className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">
+                            <button onClick={handleJoinClick}
+                                    className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">
                                 Join
                             </button>
                         )
@@ -249,14 +250,13 @@ const ProjectInfo = () => {
                     className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center p-5"
                     onClick={handleOverlayClick}>
                     <div className="bg-white w-1/3 h-1/3 rounded-md flex flex-col justify-center items-center p-1">
-                        <p className="text-2xl p-5">{joined ? 'Welcome to the project!' : 'You have unjoined the project!'}</p>
+                        <p className="text-2xl p-5">Status has been changed!</p>
 
                         <CheckSquareFilled style={{color: '#8fbc8f', fontSize: '50px'}}/>
 
                     </div>
                 </div>
             ) : null}
-
         </div>
     );
 };
