@@ -12,6 +12,7 @@ const ProjectInfo = () => {
     const {id} = useParams();
     const [project, setProject] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
     const [skillNames, setSkillNames] = useState([]);
     const [participants, setParticipants] = useState([]);
     const [ownerName, setOwnerName] = useState("");
@@ -80,8 +81,9 @@ const ProjectInfo = () => {
                 },
             });
             const data = await response.json();
+            showPopupMessage('Welcome to the project!');
             setJoined(true);
-            setShowPopup(true);
+            // setShowPopup(true);
         } catch (error) {
             console.error(error);
         }
@@ -95,8 +97,9 @@ const ProjectInfo = () => {
                 },
             });
             const data = await response.json();
+            showPopupMessage('You have unjoined the project.');
             setJoined(false);
-            setShowPopup(true)
+            // setShowPopup(true)
         } catch (error) {
             console.error(error);
         }
@@ -109,8 +112,9 @@ const ProjectInfo = () => {
             console.log("The status has been changed!" + project.project_status)
             setProject(updatedProject);
             form.resetFields();
+            showPopupMessage('Status has been changed!');
             setIsDirty(false);
-            setShowPopup(true);
+            // setShowPopup(true);
         } catch (error) {
             console.error(error)
         }
@@ -120,6 +124,15 @@ const ProjectInfo = () => {
         setIsDirty(true);
     };
 
+    const showPopupMessage = (message) => {
+        setPopupMessage(message);
+        setShowPopup(true);
+    };
+
+    const hidePopupMessage = () => {
+        setPopupMessage('');
+        setShowPopup(false);
+    };
     return (
 
         <div>
@@ -237,12 +250,10 @@ const ProjectInfo = () => {
             {showPopup ? (
                 <div
                     className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center p-5"
-                    onClick={handleOverlayClick}>
+                    onClick={hidePopupMessage}>
                     <div className="bg-white w-1/3 h-1/3 rounded-md flex flex-col justify-center items-center p-1">
-                        <p className="text-2xl p-5">Status has been changed!</p>
-
-                        <CheckSquareFilled style={{color: '#8fbc8f', fontSize: '50px'}}/>
-
+                        <p className="text-2xl p-5">{popupMessage}</p>
+                        <CheckSquareFilled style={{ color: '#8fbc8f', fontSize: '50px' }} />
                     </div>
                 </div>
             ) : null}
