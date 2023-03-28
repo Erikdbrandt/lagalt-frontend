@@ -103,7 +103,7 @@ const Navbar = () => {
 
     return (
         <div className="relative z-10">
-            <div className="fixed top-0 bg-blue-500 h-14 flex items-center justify-between w-full p-2 mb-2">
+            <div className="fixed top-0 bg-blue-500 h-14 flex items-center justify-between w-full p-4 mb-2">
                 <div className="flex items-center">
                     <Link to="/startpage">
                         <img

@@ -5,9 +5,11 @@ import ChatBox from "../components/ProjectView/ChatBox"
 const ProjectView = () => {
 
     return (
-        <div>
+        <div className={"mt-20"}>
             <ProjectInfo/>
+{/*
             <ChatBox/>
+*/}
 
         </div>
     );
