@@ -135,26 +135,6 @@ const UserProfile = () => {
                             Edit Skills
                         </button>
                     </div>
-
-                    {/*{updatedSkills.length > 0 && (*/}
-                    {/*    <div className="transition duration-500 ease-in-out backdrop-opacity-5 transform scale-90 hover:opacity-100 hover:scale-100">*/}
-                    {/*        <h4 className="text-lg font-medium my-4">Skills</h4>*/}
-                    {/*        <div className="flex flex-wrap -mx-4">*/}
-                    {/*            {updatedSkills.map(skill => (*/}
-                    {/*                <div key={skill.skill_id} className="flex-grow-0 p-4 bg-white rounded-lg shadow-md border-t-4 border-blue-500 w-full sm:w-1/2 md:w-1/3 xl:w-1/4 mb-4 mx-4">*/}
-                    {/*                    <h5 className="text-lg font-medium mb-2">*/}
-                    {/*                        <FontAwesomeIcon icon={faCode} className="mr-2" />*/}
-                    {/*                        {skill.name}*/}
-                    {/*                    </h5>*/}
-                    {/*                    <p className="text-gray-700">{skill.description}</p>*/}
-                    {/*                </div>*/}
-                    {/*            ))}*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*)}*/}
-
-
-
                     {updatedSkills.length > 0 && (
                         <div className="transition duration-500 ease-in-out backdrop-opacity-5 transform scale-90 hover:opacity-100 hover:scale-100 my-4">
                             <h4 className="text-lg font-medium my-4">Skills</h4>
