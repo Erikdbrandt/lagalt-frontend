@@ -16,15 +16,12 @@ const ProjectInfo = () => {
     const [participants, setParticipants] = useState([]);
     const [ownerName, setOwnerName] = useState("");
     const [joined, setJoined] = useState(false);
+    const [statusChanged, setStatusChanged] = useState(false);
     const [notification, setNotification] = useState(null);
 
     const {user} = useUser();
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
-        setLoading(true);
-        // Fetch project data from API using the project ID
         fetch(`http://localhost:8080/api/v1/project/${id}`)
             .then((response) => response.json())
             .then((data) => {
@@ -44,9 +41,6 @@ const ProjectInfo = () => {
                     .catch((error) => console.error(error));
             })
             .catch((error) => console.error(error));
-
-        setLoading(false);
-
     }, [id, keycloak, getUsersByIds]);
 
 
@@ -63,18 +57,6 @@ const ProjectInfo = () => {
             .then((data) => setOwnerName(data))
             .catch((error) => console.error(error));
     }, [id]);
-
-    useEffect(() => {
-
-
-        if (loading === false) {
-            if (project.participants.includes(user.user_id)) {
-                setJoined(true);
-            }
-        }
-
-
-    }, [loading])
 
     function handleOverlayClick() {
         setShowPopup(false);
@@ -129,6 +111,14 @@ const ProjectInfo = () => {
                 message: 'Error',
                 description: 'Unable to update project status. Please try again later.',
             });
+        }
+    };
+
+    const handleStatusChange = (value) => {
+        if (value !== project.project_status) {
+            setStatusChanged(true);
+        } else {
+            setStatusChanged(false);
         }
     };
 
@@ -197,13 +187,15 @@ const ProjectInfo = () => {
                         </Descriptions.Item>
                     </Descriptions>
 
-                    {keycloak.authenticated && project && project.owner === user.user_id && (
+
+                    {keycloak.authenticated && project && project.owner === user.user_id ? (
                         <Form onFinish={handleClick}>
                             <Form.Item label={<span className="text">Status</span>} name="project_status">
                                 <Select
                                     className="w-2/3"
                                     defaultValue={project.project_status}
                                     name="project_status"
+                                    onChange={handleStatusChange}
                                 >
                                     <Select.Option value="FOUNDING" className="text2">
                                         FOUNDING
@@ -224,7 +216,8 @@ const ProjectInfo = () => {
                                     htmlType="submit"
                                     className="btn ml-3"
                                     disabled={
-                                        project.project_status === "FOUNDING" || // Add any other default values here
+                                        !statusChanged ||
+                                        project.project_status === "FOUNDING" ||
                                         project.project_status === "IN_PROGRESS" ||
                                         project.project_status === "STALLED" ||
                                         project.project_status === "COMPLETED"
@@ -234,9 +227,18 @@ const ProjectInfo = () => {
                                 </Button>
                             </Form.Item>
                         </Form>
+
+                    ) : (
+                        joined ? (
+                            <button onClick={handleUnjoinClick} className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
+                                Unjoin
+                            </button>
+                        ) : (
+                            <button onClick={handleJoinClick} className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">
+                                Join
+                            </button>
+                        )
                     )}
-
-
                 </div>
             ) : (
                 <p>Loading project data...</p>
