@@ -1,25 +1,26 @@
-import {Link, useParams} from "react-router-dom"
+import {useParams} from "react-router-dom"
 import React, {useEffect, useState} from "react"
 import keycloak from "../../keycloak";
-import {Badge, Descriptions, Form, Select} from 'antd';
+import {Badge, Descriptions, Form, Select, Button} from 'antd';
 import {CheckSquareFilled} from '@ant-design/icons';
 import {useUser} from "../context/UserContext";
 import {getUsersByIds} from "../../api/userService";
 import '../../index.css';
+import axios from "axios";
 
 const ProjectInfo = () => {
-    const {id} = useParams(); // extract project ID from URL path
+    const {id} = useParams();
     const [project, setProject] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [skillNames, setSkillNames] = useState([]);
     const [participants, setParticipants] = useState([]);
     const [ownerName, setOwnerName] = useState("");
     const [joined, setJoined] = useState(false);
-    const [isActive, setIsActive] = useState(true);
+    const [notification, setNotification] = useState(null);
+
     const {user} = useUser();
 
     useEffect(() => {
-        // Fetch project data from API using the project ID
         fetch(`http://localhost:8080/api/v1/project/${id}`)
             .then((response) => response.json())
             .then((data) => {
@@ -91,9 +92,26 @@ const ProjectInfo = () => {
         }
     };
 
-    function handleClick() {
-        // Perform some action when the button is clicked
-    }
+    const handleClick = async (values) => {
+        try {
+            console.log("HERE")
+            // make the API call to update the project status
+            const response = await axios.patch(`http://localhost:8080/api/v1/project/update/${id}`,
+                {project_status: values.project_status});
+            // handle success case by displaying a success message to the user and updating the project status on the frontend
+            notification.success({
+                message: 'Success',
+                description: 'Project status has been updated',
+            });
+            setProject(response.data);
+        } catch (error) {
+            // handle error case by displaying an error message to the user
+            notification.error({
+                message: 'Error',
+                description: 'Unable to update project status. Please try again later.',
+            });
+        }
+    };
 
     return (
         <div>
@@ -123,23 +141,10 @@ const ProjectInfo = () => {
                             <span className="text">Owner</span>
                         }>{ownerName}</Descriptions.Item>
 
-                        {keycloak.authenticated && project && project.owner === user.user_id ? (
-                            <Form.Item label={
-                                <span className="text">Status</span>
-                            } name="project_status">
-                                <Select className="w-2/3">
-                                    <Select.Option value="FOUNDING">FOUNDING</Select.Option>
-                                    <Select.Option value="IN_PROGRESS">IN_PROGRESS</Select.Option>
-                                    <Select.Option value="STALLED">STALLED</Select.Option>
-                                    <Select.Option value="COMPLETED">COMPLETED</Select.Option>
-                                </Select>
-                            </Form.Item>
-                        ) : (
-                            <Descriptions.Item label={
-                                <span className="text">Status</span>
-                            }>{project.project_status}</Descriptions.Item>
+                        {keycloak.authenticated && project && project.owner !== user.user_id && (
+                            <Descriptions.Item label={<span
+                                className="text">Status</span>}>{project.project_status}</Descriptions.Item>
                         )}
-
 
                         <Descriptions.Item label={
                             <span className="text">Participants</span>
@@ -171,25 +176,46 @@ const ProjectInfo = () => {
                             </ul>
                         </Descriptions.Item>
                     </Descriptions>
-                    {keycloak.authenticated &&
-                        (project.owner === user.user_id ?
-                                    <button
-                                        className={`bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4 w-804 ${isActive ? '' : 'disabled'}`}
-                                        onClick={handleClick}
-                                        disabled={!isActive}
-                                    >
-                                        Save
-                                    </button>
-                                :
-                                joined ?
-                                    <button onClick={handleUnjoinClick}
-                                            className="bg-red-400 text-white font-bold py-2 px-4 rounded mt-4">
-                                        Unjoin
-                                    </button>
-                                    :
-                                    <button onClick={handleJoinClick}
-                                            className="bg-blue-400 text-white font-bold py-2 px-4 rounded mt-4">Join</button>
-                        )}
+
+                    {keycloak.authenticated && project && project.owner === user.user_id && (
+                        <Form onFinish={handleClick}>
+                            <Form.Item label={<span className="text">Status</span>} name="project_status">
+                                <Select
+                                    className="w-2/3"
+                                    defaultValue={project.project_status}
+                                    name="project_status"
+                                >
+                                    <Select.Option value="FOUNDING" className="text2">
+                                        FOUNDING
+                                    </Select.Option>
+                                    <Select.Option value="IN_PROGRESS" className="text2">
+                                        IN_PROGRESS
+                                    </Select.Option>
+                                    <Select.Option value="STALLED" className="text2">
+                                        STALLED
+                                    </Select.Option>
+                                    <Select.Option value="COMPLETED" className="text2">
+                                        COMPLETED
+                                    </Select.Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button
+                                    htmlType="submit"
+                                    className="btn ml-3"
+                                    disabled={
+                                        project.project_status === "FOUNDING" || // Add any other default values here
+                                        project.project_status === "IN_PROGRESS" ||
+                                        project.project_status === "STALLED" ||
+                                        project.project_status === "COMPLETED"
+                                    }
+                                >
+                                    Save
+                                </Button>
+                            </Form.Item>
+                        </Form>
+                    )}
+
 
                 </div>
             ) : (

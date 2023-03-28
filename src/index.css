@@ -47,6 +47,10 @@ pre {
      @apply bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded;
  }
 
+.label-wrapper {
+    display: block !important;
+}
+
 /*nav {*/
 /*    background-color: #333333;*/
 /*    color: white;*/
