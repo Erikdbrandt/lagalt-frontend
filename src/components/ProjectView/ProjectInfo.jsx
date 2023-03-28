@@ -31,14 +31,16 @@ const ProjectInfo = () => {
                 getUsersByIds([...participantsIds, ownerId])
                     .then((participantNames) => {
                         setParticipants(participantNames);
-                        if (keycloak.authenticated && participantsIds.includes(user.user_id)) {
-                            setJoined(true);
-                        }
+                        // Check if the logged-in user is already a participant
+                        if(!joined) {
+                            if (keycloak.authenticated && participantsIds.includes(user.user_id)) {
+                                setJoined(true);
+                            }}
                     })
                     .catch((error) => console.error(error));
             })
             .catch((error) => console.error(error));
-    }, [id, keycloak, getUsersByIds]);
+    }, [id, keycloak, getUsersByIds,joined]);
 
 
     useEffect(() => {
@@ -159,9 +161,12 @@ const ProjectInfo = () => {
                                 <ul>
                                     {participants.map((participant) => (
                                         <li key={participant}>
-          <span className={participant === ownerName ? "owner-name" : ""}>
-            {participant}
-          </span>
+                             <span className={participant === ownerName ? "owner-name font-bold" : ""}>
+                                  {participant}
+                             {participant === ownerName ? (
+                                 <span className="text-gray-400 ml-1">(owner)</span>
+                             ) : null}
+                                </span>
                                             {participant === ownerName ? (
                                                 <Badge/>
                                             ) : null}

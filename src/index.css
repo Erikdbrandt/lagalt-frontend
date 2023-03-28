@@ -29,7 +29,9 @@ pre {
 }
 
 .owner-name {
-    color: red; /* or any other color you want */
+    color: dodgerblue; /* or any other color you want */
+    font-weight: bold;
+
 }
 
 .text-page {
@@ -37,7 +39,7 @@ pre {
 }
 .text {
     @apply text-base font-bold text-gray-800;
-}.
+}
 
  text2 {
     @apply text-base text-gray-600;
