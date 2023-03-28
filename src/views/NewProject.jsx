@@ -62,7 +62,7 @@ const NewProject = () => {
 
         try {
             console.log(user)
-            const formData = {...values, skills: selectedSkills, owner: user.user_id};
+            const formData = {...values, skills: selectedSkills, owner: user.user_id, participants: [user.user_id]};
             console.log(formData)
             const response = await axios.post('http://localhost:8080/api/v1/project/create', formData);
             console.log(response.data);

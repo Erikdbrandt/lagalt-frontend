@@ -19,8 +19,12 @@ const ProjectInfo = () => {
     const [notification, setNotification] = useState(null);
 
     const {user} = useUser();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
+        setLoading(true);
+        // Fetch project data from API using the project ID
         fetch(`http://localhost:8080/api/v1/project/${id}`)
             .then((response) => response.json())
             .then((data) => {
@@ -40,6 +44,9 @@ const ProjectInfo = () => {
                     .catch((error) => console.error(error));
             })
             .catch((error) => console.error(error));
+
+        setLoading(false);
+
     }, [id, keycloak, getUsersByIds]);
 
 
@@ -56,6 +63,18 @@ const ProjectInfo = () => {
             .then((data) => setOwnerName(data))
             .catch((error) => console.error(error));
     }, [id]);
+
+    useEffect(() => {
+
+
+        if (loading === false) {
+            if (project.participants.includes(user.user_id)) {
+                setJoined(true);
+            }
+        }
+
+
+    }, [loading])
 
     function handleOverlayClick() {
         setShowPopup(false);
