@@ -104,7 +104,7 @@ const NewProject = () => {
 
     return (
         <>
-            <h1 className="text-page my-8">Create a project</h1>
+            <h1 className="text-page mt-20 my-8">Create a project</h1>
             <Checkbox className="mt-5"
                       checked={componentDisabled}
                       onChange={(e) => setComponentDisabled(e.target.checked)}
