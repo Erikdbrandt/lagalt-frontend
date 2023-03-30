@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import {useUser} from "../components/context/UserContext"
 import keycloak from "../keycloak";
 import { useEffect, useState } from "react";
-import { loginUser, updateUser } from "../api/userService";
+import { loginUser } from "../api/userService";
 import PopUp from "../components/PopUps/PopUp";
 import {useNavigate} from 'react-router-dom';
 
 const Navbar = () => {
-    const { user, handleLogin, handleLogout, handleUpdateUser } = useUser();
+    const { user, handleLogin, handleLogout } = useUser();
     const [showPopup, setShowPopup] = useState(false);
     const navigate = useNavigate();
 
@@ -82,23 +82,9 @@ const Navbar = () => {
         }
     };
 
-    const handlePopupSubmit = async (visibility) => {
+    const handlePopupSubmit = async () => {
         setShowPopup(false);
 
-        user.userVisibility = visibility;
-
-        const [updateError, updatedUser] = await updateUser(
-            user.user_id,
-            user
-        );
-
-        if (updateError) {
-            console.log(updateError);
-            return;
-        }
-
-        handleUpdateUser(updatedUser);
-        console.log(`Updated user with ID: ${user.user_id}`);
     };
 
     return (

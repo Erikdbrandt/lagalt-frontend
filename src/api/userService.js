@@ -1,6 +1,11 @@
 import keycloak from "../keycloak";
 import axios from "axios";
 
+/**
+ * This function checks the backend for a user with a specfic email.
+ * @param email
+ * @returns {Promise<any[]|(*|*[])[]>}
+ */
 const checkForUser = async (email) => {
     try {
         const response = await axios.get(
@@ -20,6 +25,12 @@ const checkForUser = async (email) => {
     }
 };
 
+
+/**
+ * this function fetches a list of users by their ids
+ * @param userIds
+ * @returns {Promise<*|*[]>}
+ */
 export const getUsersByIds = async (userIds) => {
     try {
         const response = await axios.get(
@@ -33,15 +44,20 @@ export const getUsersByIds = async (userIds) => {
 
         const users = response.data;
         const filteredUsers = users.filter((user) => userIds.includes(user.user_id));
-        const userNames = filteredUsers.map((user) => user.full_name);
-        return userNames;
+        return filteredUsers.map((user) => user.full_name);
     } catch (error) {
         console.error(error);
         return [];
     }
 };
 
-const createUser = async (userProfile, authorityRole) => {
+
+/**
+ * This function creates a new user in the backend
+ * @param userProfile
+ * @returns {Promise<any[]|(*|*[])[]>}
+ */
+const createUser = async (userProfile) => {
     try {
         const response = await axios.post(
             "http://localhost:8080/api/v1/user/create",
@@ -49,7 +65,7 @@ const createUser = async (userProfile, authorityRole) => {
                 email: userProfile.email,
                 full_name: userProfile.firstName + " " + userProfile.lastName,
                 userVisibility: "REGULAR"
-             //   authorityType: authorityRole,
+
             },
             {
                 headers: {
@@ -73,7 +89,12 @@ const createUser = async (userProfile, authorityRole) => {
     }
 };
 
-export const loginUser = async (userProfile, authorityRole) => {
+/**
+ * this function checks if a user exists in the backend and creates a new user if not
+ * @param userProfile
+ * @returns {Promise<[null,{isNewUser: boolean, user: *}]|[*,{isNewUser: boolean, user: null}]>}
+ */
+export const loginUser = async (userProfile) => {
     const [checkError, user] = await checkForUser(userProfile.email);
 
     if (checkError !== null) {
@@ -86,7 +107,7 @@ export const loginUser = async (userProfile, authorityRole) => {
     }
 
     console.log("we got a new user" + userProfile);
-    const [createError, newUser] = await createUser(userProfile, authorityRole);
+    const [createError, newUser] = await createUser(userProfile);
 
     if (createError) {
         return [createError, { user: null, isNewUser: false }];
@@ -95,6 +116,13 @@ export const loginUser = async (userProfile, authorityRole) => {
     return [null, { user: newUser, isNewUser: true }];
 };
 
+
+/**
+ * This function updates the skills of a user
+ * @param userId
+ * @param skills
+ * @returns {Promise<any[]|(*|*[])[]>}
+ */
 export const updateSkillsInUser = async (userId, skills) => {
     try {
 
@@ -123,6 +151,13 @@ export const updateSkillsInUser = async (userId, skills) => {
         return [error.message, []];
     }
 };
+
+/**
+ * This function updates the user data
+ * @param userId
+ * @param userData
+ * @returns {Promise<any[]|(*|*[])[]>}
+ */
 
 export const updateUser = async (userId, userData) => {
     try {

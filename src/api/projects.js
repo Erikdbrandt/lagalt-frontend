@@ -1,5 +1,9 @@
 import keycloak from "../keycloak"
 
+/**
+ * This function fetches all projects from the backend.
+ * @returns {Promise<any|*[]>}
+ */
 export async function getAllProjects() {
     try {
         const response = await fetch('http://localhost:8080/api/v1/project', {
@@ -42,6 +46,12 @@ export const getAllProjectsFromAUser = async (userId) => {
     }
 }
 
+
+/**
+ * This function fetches all projects belonging to a user with the specified user ID.
+ * @param userId
+ * @returns {Promise<any[]|(*|*[])[]>}
+ */
 export const getAllProjectsFromAUserParticipant = async (userId) => {
     try {
         // Send a GET request to the API endpoint that corresponds to the specified user ID.

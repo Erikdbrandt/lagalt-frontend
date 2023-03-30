@@ -1,5 +1,10 @@
 import keycloak from "../keycloak"
 import axios from "axios"
+
+/**
+ * Gets all skills from the backend
+ * @returns {Promise<any[]|*[]>}
+ */
 export async function getAllSkills() {
     try {
         const response = await axios.get(
@@ -18,6 +23,11 @@ export async function getAllSkills() {
     }
 }
 
+/**
+ * Creates a new skill in the backend
+ * @param skill
+ * @returns {Promise<any[]|(*|*[])[]>}
+ */
 export const createSkill = async (skill) => {
     try {
 

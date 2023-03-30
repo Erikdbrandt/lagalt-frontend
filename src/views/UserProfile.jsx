@@ -119,16 +119,7 @@ const UserProfile = () => {
                         <p className="text-gray-700 mb-2">
                             <span className="font-bold">Username:</span> {user.email}
                         </p>
-                        <p className="text-gray-700 mb-4">
-                            <span className="font-bold">Visibility:</span>{" "}
-                            {user.userVisibility === "REGULAR" ? "Visible" : "Hidden"}{" "}
-                            <button
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4"
-                                onClick={toggleVisibility}
-                            >
-                                {user.userVisibility === "REGULAR" ? "Hide" : "Show"}
-                            </button>
-                        </p>
+
                         <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             onClick={togglePopup}
